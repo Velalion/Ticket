@@ -8,23 +8,19 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 body {
-  background: #f5f5f5;
+  background: #fff;
   font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 /* ── SETUP FORM ── */
 #setup {
-  background: #fff;
   width: 100%;
   max-width: 480px;
+  margin: 0 auto;
   min-height: 100vh;
-  padding: 48px 24px 40px;
-  display: flex;
-  flex-direction: column;
+  padding: 52px 24px 40px;
+  background: #fff;
 }
 
 #setup h2 {
@@ -32,7 +28,6 @@ body {
   font-weight: 700;
   margin-bottom: 28px;
   color: #111;
-  letter-spacing: -.3px;
 }
 
 .field { margin-bottom: 18px; }
@@ -47,7 +42,7 @@ body {
   letter-spacing: .4px;
 }
 
-.field input, .field select {
+.field input {
   width: 100%;
   padding: 13px 14px;
   border: 1.5px solid #e8e8e8;
@@ -57,34 +52,22 @@ body {
   color: #111;
   background: #fff;
   outline: none;
-  transition: border-color .15s;
   -webkit-appearance: none;
 }
 
 .field input:focus { border-color: #fc7f1e; }
 
-.swap-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-}
-
-.swap-row .field { flex: 1; }
+.swap-row { display: flex; align-items: flex-end; gap: 10px; }
+.swap-row .field { flex: 1; margin-bottom: 0; }
 
 .swap-btn {
   background: #f5f5f5;
   border: none;
   border-radius: 10px;
-  width: 44px;
-  height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  width: 44px; height: 46px;
   font-size: 20px;
-  color: #555;
+  cursor: pointer;
   flex-shrink: 0;
-  margin-bottom: 0;
 }
 
 .generate-btn {
@@ -98,53 +81,42 @@ body {
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  margin-top: 10px;
-  letter-spacing: -.1px;
+  margin-top: 20px;
 }
-
-.generate-btn:active { opacity: .85; }
 
 /* ── TICKET VIEW ── */
 #ticket-view {
   display: none;
-  background: #fff;
   width: 100%;
   max-width: 480px;
+  margin: 0 auto;
   min-height: 100vh;
+  background: #fff;
   flex-direction: column;
 }
 
-/* Header */
 .tkt-header {
   display: flex;
   align-items: center;
-  padding: 54px 16px 12px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 52px 16px 14px;
 }
 
 .tkt-back {
-  font-size: 26px;
+  font-size: 28px;
   color: #333;
-  margin-right: 12px;
-  line-height: 1;
+  margin-right: 10px;
   cursor: pointer;
-  padding: 4px 8px 4px 0;
+  line-height: 1;
 }
 
 .tkt-title {
   font-size: 18px;
   font-weight: 600;
   color: #000;
-  letter-spacing: -.2px;
 }
 
-/* Ticket body */
-.tkt-body {
-  flex: 1;
-  padding: 24px 20px 20px;
-}
+.tkt-body { padding: 22px 20px 20px; flex: 1; }
 
-/* Route */
 .route-row {
   display: flex;
   align-items: flex-start;
@@ -153,20 +125,18 @@ body {
 }
 
 .route-text {
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 700;
   color: #000;
   line-height: 1.3;
-  letter-spacing: -.3px;
   flex: 1;
 }
 
-/* Train icon */
+/* TRAIN ICON — orange circle */
 .train-icon {
-  width: 42px;
-  height: 42px;
+  width: 42px; height: 42px;
   border-radius: 50%;
-  background: #f0f0f0;
+  background: #fc7f1e;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,18 +144,11 @@ body {
   margin-top: 2px;
 }
 
-.train-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-/* Date */
 .tkt-date {
   margin-top: 18px;
   font-size: 20px;
   font-weight: 700;
   color: #000;
-  letter-spacing: -.2px;
 }
 
 .tkt-valid {
@@ -194,83 +157,65 @@ body {
   color: #999;
 }
 
-/* Barcode flip container */
-.barcode-flip-outer {
+/* BARCODE */
+.barcode-wrap {
   margin: 20px 0 22px;
-  perspective: 1200px;
   cursor: pointer;
-  user-select: none;
-}
-
-.barcode-flip-inner {
-  transition: transform 0s;
+  -webkit-perspective: 800px;
+  perspective: 800px;
+  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
-}
-
-.barcode-flip-inner.spinning {
-  transition: transform 1.1s cubic-bezier(.4,0,.2,1);
-  transform: rotateY(720deg);
 }
 
 #barcodeCanvas {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 3px;
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+  will-change: transform;
 }
 
-/* Type */
 .tkt-type {
   font-size: 16px;
   font-weight: 600;
   color: #000;
-  letter-spacing: -.1px;
 }
 
 .tkt-subtype {
   font-size: 14px;
   color: #999;
-  margin-top: 3px;
-  line-height: 1.4;
+  margin-top: 4px;
+  line-height: 1.45;
 }
 
-/* Footer */
 .tkt-footer {
-  padding: 16px 20px 32px;
+  padding: 16px 20px 40px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   border-top: 1px solid #f0f0f0;
 }
 
-.tkt-price {
-  font-size: 18px;
-  font-weight: 700;
-  color: #000;
-}
-
-.tkt-number {
-  font-size: 13px;
-  color: #999;
-  text-align: right;
-}
+.tkt-price { font-size: 18px; font-weight: 700; color: #000; }
+.tkt-number { font-size: 13px; color: #999; }
 </style>
 </head>
 <body>
 
-<!-- ── FORM ── -->
+<!-- FORM -->
 <div id="setup">
   <h2>Создать билет</h2>
 
   <div class="field">
     <label>Откуда</label>
-    <input type="text" id="fromStation" value="Санкт-Петербург (Московский вокзал)" placeholder="Станция отправления">
+    <input type="text" id="fromStation" value="Санкт-Петербург (Московский вокзал)">
   </div>
 
   <div class="swap-row">
-    <div class="field" style="margin-bottom:0">
+    <div class="field">
       <label>Куда</label>
-      <input type="text" id="toStation" value="Фарфоровская" placeholder="Станция назначения">
+      <input type="text" id="toStation" value="Фарфоровская">
     </div>
     <button class="swap-btn" onclick="swapStations()">⇅</button>
   </div>
@@ -283,7 +228,7 @@ body {
   <button class="generate-btn" onclick="generateTicket()">Создать билет</button>
 </div>
 
-<!-- ── TICKET ── -->
+<!-- TICKET -->
 <div id="ticket-view">
   <div class="tkt-header">
     <span class="tkt-back">←</span>
@@ -292,233 +237,217 @@ body {
 
   <div class="tkt-body">
     <div class="route-row">
-      <div class="route-text" id="routeText">Санкт-Петербург (Московский вокзал) — Фарфоровская</div>
+      <div class="route-text" id="routeText"></div>
+      <!-- Orange circle with white front-view EMU train icon -->
       <div class="train-icon">
-        <!-- Electric suburban train side-view (электричка) -->
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- body -->
-          <rect x="3" y="16" width="42" height="20" rx="4" fill="#555"/>
-          <!-- windows row -->
-          <rect x="7"  y="20" width="7" height="7" rx="1.5" fill="#c8e8ff"/>
-          <rect x="17" y="20" width="7" height="7" rx="1.5" fill="#c8e8ff"/>
-          <rect x="27" y="20" width="7" height="7" rx="1.5" fill="#c8e8ff"/>
-          <rect x="37" y="20" width="5" height="7" rx="1.5" fill="#c8e8ff"/>
-          <!-- stripe -->
-          <rect x="3" y="30" width="42" height="3" fill="#fc7f1e"/>
-          <!-- wheels -->
-          <circle cx="11" cy="37" r="4" fill="#333"/>
-          <circle cx="11" cy="37" r="2" fill="#888"/>
-          <circle cx="37" cy="37" r="4" fill="#333"/>
-          <circle cx="37" cy="37" r="2" fill="#888"/>
-          <!-- pantograph suggestion -->
-          <rect x="20" y="10" width="2" height="6" fill="#888"/>
-          <rect x="16" y="9" width="10" height="1.5" fill="#888"/>
-          <!-- front cab -->
-          <rect x="3" y="16" width="10" height="20" rx="3" fill="#666"/>
-          <!-- headlight -->
-          <circle cx="7" cy="32" r="2" fill="#ffe082"/>
-          <!-- coupler -->
-          <rect x="0" y="26" width="4" height="5" rx="1" fill="#444"/>
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Front cab body -->
+          <rect x="4" y="8" width="18" height="12" rx="3" fill="white"/>
+          <!-- Cab windshield - two rectangular windows side by side -->
+          <rect x="6" y="10" width="6" height="5" rx="1" fill="#fc7f1e"/>
+          <rect x="14" y="10" width="6" height="5" rx="1" fill="#fc7f1e"/>
+          <!-- Center divider -->
+          <rect x="12.5" y="10" width="1" height="5" fill="white"/>
+          <!-- Bottom stripe -->
+          <rect x="4" y="17" width="18" height="2" rx="0" fill="#fc7f1e" opacity="0.35"/>
+          <!-- Headlights -->
+          <circle cx="7.5" cy="19" r="1.2" fill="#ffe082"/>
+          <circle cx="18.5" cy="19" r="1.2" fill="#ffe082"/>
+          <!-- Wheels -->
+          <rect x="5" y="20" width="5" height="2" rx="1" fill="white" opacity="0.7"/>
+          <rect x="16" y="20" width="5" height="2" rx="1" fill="white" opacity="0.7"/>
+          <!-- Coupler -->
+          <rect x="11" y="22" width="4" height="2" rx="1" fill="white" opacity="0.5"/>
+          <!-- Pantograph (top) -->
+          <rect x="10" y="5" width="1.5" height="3" fill="white" opacity="0.8"/>
+          <rect x="14.5" y="5" width="1.5" height="3" fill="white" opacity="0.8"/>
+          <rect x="8" y="4.5" width="10" height="1" rx=".5" fill="white" opacity="0.6"/>
         </svg>
       </div>
     </div>
 
-    <div class="tkt-date" id="ticketDate">14 января</div>
-    <div class="tkt-valid" id="ticketValid">Действует до 01:00 15 января</div>
+    <div class="tkt-date" id="ticketDate"></div>
+    <div class="tkt-valid" id="ticketValid"></div>
 
-    <div class="barcode-flip-outer" onclick="flipBarcode(this)">
-      <div class="barcode-flip-inner">
-        <canvas id="barcodeCanvas" width="700" height="200"></canvas>
-      </div>
+    <!-- Barcode — click/tap to spin -->
+    <div class="barcode-wrap" id="barcodeWrap">
+      <canvas id="barcodeCanvas" width="420" height="120"></canvas>
     </div>
 
     <div class="tkt-type">Полный, в одну сторону</div>
-    <div class="tkt-subtype">Билет на электричку «Ласточка»</div>
+    <div class="tkt-subtype" id="ticketSubtype">Билет на электричку «Ласточка»</div>
   </div>
 
   <div class="tkt-footer">
     <div class="tkt-price">65 ₽</div>
-    <div class="tkt-number" id="ticketNumber">Билет № 3682591086784</div>
+    <div class="tkt-number" id="ticketNumber"></div>
   </div>
 </div>
 
 <script>
-// ── Utils ──
+// ── utils ──
 function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
-function rndF(a,b){ return Math.random()*(b-a)+a; }
 
-function randomTicketNumber(){
-  let n='';
-  for(let i=0;i<13;i++) n+=rnd(0,9);
-  return n;
+function randomTicketNum(){
+  var n=''; for(var i=0;i<13;i++) n+=rnd(0,9); return n;
 }
 
-function formatDateRu(d){
-  const m=['января','февраля','марта','апреля','мая','июня',
-           'июля','августа','сентября','октября','ноября','декабря'];
+function formatRu(d){
+  var m=['января','февраля','марта','апреля','мая','июня',
+         'июля','августа','сентября','октября','ноября','декабря'];
   return d.getDate()+' '+m[d.getMonth()];
 }
 
 function swapStations(){
-  const a=document.getElementById('fromStation');
-  const b=document.getElementById('toStation');
-  [a.value,b.value]=[b.value,a.value];
+  var a=document.getElementById('fromStation');
+  var b=document.getElementById('toStation');
+  var t=a.value; a.value=b.value; b.value=t;
 }
 
-// Default date = today
+// default date = today
 (function(){
-  const t=new Date();
-  const s=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
-  document.getElementById('tripDate').value=s;
+  var t=new Date();
+  document.getElementById('tripDate').value=
+    t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
 })();
 
-// ── Barcode generator ──
-// Matches the style in the photo: alternating columns of
-// vertical bars and 2D matrix, with heavy guard bars on each side.
-function drawBarcode(canvas){
-  const ctx=canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height;
-  const CELL=6; // 2D matrix cell size
+// ── BARCODE ──
+// Reproduces the style from the photo:
+// solid-bar guards | 2D matrix | thin bars | 2D matrix | thin bars | 2D matrix | solid-bar guards
+function drawBarcode(cv){
+  var ctx=cv.getContext('2d');
+  var W=cv.width, H=cv.height;
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
 
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#fff';
-  ctx.fillRect(0,0,W,H);
-
-  // Layout: [type, widthPx]
-  // guard | matrix | bars | matrix | bars | matrix | guard
-  const layout=[
-    {t:'guard',  w:75},
-    {t:'matrix', w:150},
-    {t:'bars',   w:55},
-    {t:'matrix', w:150},
-    {t:'bars',   w:45},
-    {t:'matrix', w:135},
-    {t:'guard',  w:90},
+  // Section widths (pixels, sum = W = 420)
+  var sections=[
+    {k:'guard',  w:52},
+    {k:'matrix', w:108},
+    {k:'sep',    w:36},
+    {k:'matrix', w:108},
+    {k:'sep',    w:28},
+    {k:'matrix', w:88},
   ];
 
-  let x=0;
-  for(const s of layout){
-    if(s.t==='guard')  drawGuard(ctx, x, 0, s.w, H);
-    else if(s.t==='bars') drawBars(ctx, x, 0, s.w, H);
-    else               drawMatrix(ctx, x, 0, s.w, H, CELL);
+  var x=0;
+  for(var i=0;i<sections.length;i++){
+    var s=sections[i];
+    if(s.k==='guard')  drawGuard(ctx,x,0,s.w,H);
+    else if(s.k==='sep') drawSep(ctx,x,0,s.w,H);
+    else                 drawMatrix(ctx,x,0,s.w,H);
     x+=s.w;
   }
+  // Right guard
+  drawGuard(ctx,x,0,W-x,H);
 
-  // Top/bottom solid border
+  // Top + bottom full-width solid bars
   ctx.fillStyle='#000';
-  ctx.fillRect(0,0,W,CELL);
-  ctx.fillRect(0,H-CELL,W,CELL);
+  ctx.fillRect(0,0,W,5);
+  ctx.fillRect(0,H-5,W,5);
 }
 
 function drawGuard(ctx,ox,oy,w,h){
-  // Solid vertical bars of varying widths — classic barcode guard
   ctx.fillStyle='#000';
-  let x=ox;
-  const patterns=[
-    [4,2,6,3,5,2,8,3,6],
-    [6,2,4,2,7,3,5,2,7,3],
-    [5,3,8,2,4,3,6,2,5],
-  ];
-  const pat=patterns[rnd(0,patterns.length-1)];
-  let barIdx=0;
+  // Pattern of bars that mimics real barcode guard bars
+  // widths of bars and gaps (alternating bar/gap)
+  var pat=[5,2,3,2,8,2,4,3,6,2,3,2,5,2,8,3,4,2,6,2];
+  var x=ox, pi=0, drawBar=true;
   while(x<ox+w){
-    const bw=pat[barIdx%pat.length];
-    const draw=barIdx%2===0;
-    if(draw) ctx.fillRect(x,oy,Math.min(bw,ox+w-x),h);
-    x+=bw;
-    barIdx++;
-  }
-  // Ensure solid left edge on leftmost
-  if(ox===0){
-    ctx.fillRect(ox,oy,3,h);
-    ctx.fillRect(ox+6,oy,5,h);
-    ctx.fillRect(ox+14,oy,2,h);
+    var bw=pat[pi%pat.length];
+    if(drawBar) ctx.fillRect(x,oy,Math.min(bw,ox+w-x),h);
+    x+=bw; pi++; drawBar=!drawBar;
   }
 }
 
-function drawBars(ctx,ox,oy,w,h){
+function drawSep(ctx,ox,oy,w,h){
   ctx.fillStyle='#000';
-  let x=ox;
+  var pat=[4,3,6,3,4,3,5,2,4];
+  var x=ox, pi=0, drawBar=true;
   while(x<ox+w){
-    const bw=rnd(2,7);
-    const gap=rnd(2,5);
-    if(Math.random()>0.25) ctx.fillRect(x,oy,Math.min(bw,ox+w-x),h);
-    x+=bw+gap;
+    var bw=pat[pi%pat.length];
+    if(drawBar) ctx.fillRect(x,oy,Math.min(bw,ox+w-x),h);
+    x+=bw; pi++; drawBar=!drawBar;
   }
 }
 
-function drawMatrix(ctx,ox,oy,w,h,cell){
-  const cols=Math.floor(w/cell);
-  const rows=Math.floor(h/cell);
-
-  // Build a seed-seeded pattern so it looks structured (not purely random)
-  // Use cellular-automaton-inspired density
-  const grid=[];
-  for(let r=0;r<rows;r++){
-    grid[r]=[];
-    for(let c=0;c<cols;c++){
-      // Base density + local wave
-      const d = 0.5
-        + 0.15*Math.sin(c*0.7+r*0.3)
-        + 0.10*Math.cos(r*0.9+c*0.5)
-        + (Math.random()-0.5)*0.35;
-      grid[r][c] = d > 0.5 ? 1 : 0;
-    }
-  }
-
+function drawMatrix(ctx,ox,oy,w,h){
+  var cell=5;
+  var cols=Math.floor(w/cell);
+  var rows=Math.floor(h/cell);
   ctx.fillStyle='#000';
-  for(let r=0;r<rows;r++){
-    for(let c=0;c<cols;c++){
-      if(grid[r][c]){
-        ctx.fillRect(ox+c*cell, oy+r*cell, cell-1, cell-1);
+  for(var r=0;r<rows;r++){
+    for(var c=0;c<cols;c++){
+      // structured density: use wave + noise to mimic real 2D barcode patterns
+      var v=0.5
+        +0.18*Math.sin(c*0.85+r*0.4+ox*0.01)
+        +0.12*Math.cos(r*0.75+c*0.55)
+        +(Math.random()-0.5)*0.45;
+      if(v>0.5){
+        ctx.fillRect(ox+c*cell, oy+r*cell, cell, cell);
       }
     }
   }
 }
 
-// ── Flip animation ──
-function flipBarcode(outer){
-  const inner=outer.querySelector('.barcode-flip-inner');
-  if(inner.classList.contains('spinning')) return;
+// ── FLIP ANIMATION (rAF-based, works on all devices) ──
+var _spinning=false;
 
-  // Reset first (instant)
-  inner.style.transition='none';
-  inner.style.transform='rotateY(0deg)';
+function startFlip(){
+  if(_spinning) return;
+  _spinning=true;
+  var cv=document.getElementById('barcodeCanvas');
+  var total=720; // degrees
+  var dur=1100;  // ms
+  var start=null;
 
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      inner.classList.add('spinning');
-      inner.addEventListener('transitionend',function h(){
-        inner.classList.remove('spinning');
-        inner.style.transition='none';
-        inner.style.transform='rotateY(0deg)';
-        inner.removeEventListener('transitionend',h);
-      });
-    });
-  });
+  function ease(t){ return t<.5?2*t*t:-1+(4-2*t)*t; } // easeInOut
+
+  function step(ts){
+    if(!start) start=ts;
+    var elapsed=ts-start;
+    var progress=Math.min(elapsed/dur,1);
+    var deg=ease(progress)*total;
+    cv.style.transform='rotateY('+deg+'deg)';
+    if(progress<1){
+      requestAnimationFrame(step);
+    } else {
+      cv.style.transform='rotateY(0deg)';
+      _spinning=false;
+    }
+  }
+  requestAnimationFrame(step);
 }
 
-// ── Generate ──
+// attach events after DOM ready
+window.addEventListener('DOMContentLoaded',function(){
+  var wrap=document.getElementById('barcodeWrap');
+  wrap.addEventListener('click', startFlip);
+  wrap.addEventListener('touchend', function(e){
+    e.preventDefault();
+    startFlip();
+  }, {passive:false});
+});
+
+// ── GENERATE ──
 function generateTicket(){
-  const from=document.getElementById('fromStation').value.trim()||'Станция А';
-  const to=document.getElementById('toStation').value.trim()||'Станция Б';
-  const dateV=document.getElementById('tripDate').value;
+  var from=document.getElementById('fromStation').value.trim()||'Откуда';
+  var to=document.getElementById('toStation').value.trim()||'Куда';
+  var dv=document.getElementById('tripDate').value;
+  if(!dv){ alert('Выберите дату'); return; }
 
-  if(!dateV){ alert('Выберите дату'); return; }
-
-  const tripDate=new Date(dateV+'T12:00:00');
-  const nextDate=new Date(tripDate);
-  nextDate.setDate(nextDate.getDate()+1);
+  var d1=new Date(dv+'T12:00:00');
+  var d2=new Date(d1); d2.setDate(d2.getDate()+1);
 
   document.getElementById('routeText').textContent=from+' — '+to;
-  document.getElementById('ticketDate').textContent=formatDateRu(tripDate);
-  document.getElementById('ticketValid').textContent='Действует до 01:00 '+formatDateRu(nextDate);
-  document.getElementById('ticketNumber').textContent='Билет № '+randomTicketNumber();
+  document.getElementById('ticketDate').textContent=formatRu(d1);
+  document.getElementById('ticketValid').textContent='Действует до 01:00 '+formatRu(d2);
+  document.getElementById('ticketNumber').textContent='Билет № '+randomTicketNum();
 
   drawBarcode(document.getElementById('barcodeCanvas'));
 
   document.getElementById('setup').style.display='none';
-  document.getElementById('ticket-view').style.display='flex';
+  var tv=document.getElementById('ticket-view');
+  tv.style.display='flex';
   window.scrollTo(0,0);
 }
 </script>
