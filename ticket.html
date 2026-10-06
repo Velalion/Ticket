@@ -233,20 +233,31 @@ body {
 
   <div class="field">
     <label>Откуда</label>
-    <input type="text" id="fromStation" placeholder="Начало" >
+    <select id="fromSelect" onchange="onStationSelect('from')" style="width:100%;padding:13px 14px;border:1.5px solid #e8e8e8;border-radius:10px;font-size:15px;font-family:inherit;color:#111;background:#fff;outline:none;-webkit-appearance:none;appearance:none;">
+      <option value="">Выберите станцию</option>
+      <option value="Ленинский проспект">Ленинский проспект</option>
+      <option value="Балтийский вокзал">Балтийский вокзал</option>
+      <option value="Сергиево (Володарская)">Сергиево (Володарская)</option>
+      <option value="Ораниенбаум-1">Ораниенбаум-1</option>
+      <option value="Ораниенбаум-2">Ораниенбаум-2</option>
+      <option value="custom">Свой вариант…</option>
+    </select>
+    <input type="text" id="fromStation" placeholder="Начало" style="display:none;width:100%;margin-top:10px;padding:13px 14px;border:1.5px solid #e8e8e8;border-radius:10px;font-size:15px;font-family:inherit;color:#111;background:#fff;outline:none;-webkit-appearance:none;">
   </div>
 
-    <div class="swap-row">
+  <div class="swap-row">
     <div class="field">
       <label>Куда</label>
-      <input type="text" id="toStation" placeholder="Конец" list="toStationList" autocomplete="off">
-      <datalist id="toStationList">
-        <option value="Ленинский проспект">
-        <option value="Балтийский вокзал">
-        <option value="Сергиево (Володарская)">
-        <option value="Ораниенбаум-1">
-        <option value="Ораниенбаум-2">
-      </datalist>
+      <select id="toSelect" onchange="onStationSelect('to')" style="width:100%;padding:13px 14px;border:1.5px solid #e8e8e8;border-radius:10px;font-size:15px;font-family:inherit;color:#111;background:#fff;outline:none;-webkit-appearance:none;appearance:none;">
+        <option value="">Выберите станцию</option>
+        <option value="Ленинский проспект">Ленинский проспект</option>
+        <option value="Балтийский вокзал">Балтийский вокзал</option>
+        <option value="Сергиево (Володарская)">Сергиево (Володарская)</option>
+        <option value="Ораниенбаум-1">Ораниенбаум-1</option>
+        <option value="Ораниенбаум-2">Ораниенбаум-2</option>
+        <option value="custom">Свой вариант…</option>
+      </select>
+      <input type="text" id="toStation" placeholder="Конец" style="display:none;width:100%;margin-top:10px;padding:13px 14px;border:1.5px solid #e8e8e8;border-radius:10px;font-size:15px;font-family:inherit;color:#111;background:#fff;outline:none;-webkit-appearance:none;">
     </div>
     <button class="swap-btn" onclick="swapStations()">&#8645;</button>
   </div>
@@ -333,10 +344,25 @@ function formatRu(d){
   return d.getDate()+' '+m[d.getMonth()];
 }
 
+function onStationSelect(which){
+  var sel=document.getElementById(which+'Select');
+  var inp=document.getElementById(which+'Station');
+  if(sel.value==='custom'){
+    inp.style.display='block'; inp.value=''; inp.focus();
+  } else {
+    inp.style.display='none'; inp.value=sel.value;
+  }
+}
+
 function swapStations(){
+  var fs=document.getElementById('fromSelect');
+  var ts=document.getElementById('toSelect');
   var a=document.getElementById('fromStation');
   var b=document.getElementById('toStation');
-  var t=a.value; a.value=b.value; b.value=t;
+  var t=fs.value; fs.value=ts.value; ts.value=t;
+  t=a.value; a.value=b.value; b.value=t;
+  a.style.display = fs.value==='custom' ? 'block' : 'none';
+  b.style.display = ts.value==='custom' ? 'block' : 'none';
 }
 
 (function(){
