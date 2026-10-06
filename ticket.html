@@ -236,10 +236,17 @@ body {
     <input type="text" id="fromStation" placeholder="Начало" >
   </div>
 
-  <div class="swap-row">
+    <div class="swap-row">
     <div class="field">
       <label>Куда</label>
-      <input type="text" id="toStation" placeholder="Конец" >
+      <input type="text" id="toStation" placeholder="Конец" list="toStationList" autocomplete="off">
+      <datalist id="toStationList">
+        <option value="Ленинский проспект">
+        <option value="Балтийский вокзал">
+        <option value="Сергиево (Володарская)">
+        <option value="Ораниенбаум-1">
+        <option value="Ораниенбаум-2">
+      </datalist>
     </div>
     <button class="swap-btn" onclick="swapStations()">&#8645;</button>
   </div>
