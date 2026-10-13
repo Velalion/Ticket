@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -75,27 +75,6 @@ body {
   }
 }
 
-/* iOS Status Bar */
-.status-bar {
-  height: 44px;
-  padding: 12px 20px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-  flex-shrink: 0;
-  z-index: 50;
-  background: var(--bg-shell);
-  user-select: none;
-}
-.status-bar .status-icons {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 /* Scrollable Content Area */
 .content-area {
   flex: 1;
@@ -103,6 +82,31 @@ body {
   overflow-x: hidden;
   position: relative;
   -webkit-overflow-scrolling: touch;
+  padding-top: max(14px, env(safe-area-inset-top));
+}
+
+/* Ticket Creator Nav */
+.creator-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+.btn-back-creator {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 8px;
+}
+.creator-nav-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
 }
 
 /* Screen views */
@@ -348,38 +352,6 @@ body {
   max-width: 280px;
 }
 
-/* Banner ad */
-.ad-banner-kred {
-  margin: 16px 16px 8px;
-  padding: 12px 14px;
-  background: #1a1a1e;
-  border: 1px solid #2a2a30;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-.ad-banner-kred .ad-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  color: #fff;
-}
-.ad-banner-kred .ad-logo-icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #3b82f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 11px;
-}
 
 /* ──────────────────────────────────────────────────────────
    MODAL: ВЫБОР СТАНЦИИ («Откуда» / «Куда»)
@@ -537,25 +509,6 @@ body {
   font-size: 13px;
   color: var(--text-sub);
   line-height: 1.4;
-}
-.ad-card-blue {
-  margin: 10px 16px 14px;
-  background: #3730a3;
-  padding: 12px 14px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-}
-.ad-card-blue .ad-txt-1 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-}
-.ad-card-blue .ad-txt-2 {
-  font-size: 12px;
-  color: #c7d2fe;
 }
 .train-tariffs-btn {
   margin: 0 16px 16px;
@@ -1365,29 +1318,7 @@ body {
 <body>
 
 <div id="app-shell">
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <span id="liveTime">20:20</span>
-    <div class="status-icons">
-      <!-- Signal -->
-      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
-        <rect x="0" y="8" width="3" height="4" rx="0.5"/>
-        <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5"/>
-        <rect x="9" y="3" width="3" height="9" rx="0.5"/>
-        <rect x="13.5" y="0.5" width="3" height="11.5" rx="0.5"/>
-      </svg>
-      <!-- Wi-Fi -->
-      <svg width="15" height="12" viewBox="0 0 15 12" fill="white">
-        <path d="M7.5 3.5C9.7 3.5 11.7 4.4 13.1 5.8L14.5 4.4C12.7 2.6 10.2 1.5 7.5 1.5C4.8 1.5 2.3 2.6 0.5 4.4L1.9 5.8C3.3 4.4 5.3 3.5 7.5 3.5ZM7.5 7.5C8.6 7.5 9.6 7.9 10.3 8.7L11.7 7.3C10.6 6.2 9.1 5.5 7.5 5.5C5.9 5.5 4.4 6.2 3.3 7.3L4.7 8.7C5.4 7.9 6.4 7.5 7.5 7.5ZM7.5 9.5C6.7 9.5 6 10.2 6 11C6 11.8 6.7 12.5 7.5 12.5C8.3 12.5 9 11.8 9 11C9 10.2 8.3 9.5 7.5 9.5Z"/>
-      </svg>
-      <!-- Battery -->
-      <svg width="24" height="12" viewBox="0 0 24 12" fill="white">
-        <rect x="1" y="1" width="19" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none"/>
-        <rect x="3" y="3" width="13" height="6" rx="1.5" fill="white"/>
-        <path d="M22 4.5V7.5C22.6 7.2 23 6.6 23 6C23 5.4 22.6 4.8 22 4.5Z" fill="white"/>
-      </svg>
-    </div>
-  </div>
+
 
   <!-- Scrollable Content Area -->
   <div class="content-area">
@@ -1461,85 +1392,8 @@ body {
         </div>
 
         <!-- Trains list matching screenshots -->
-        <div class="trains-list" id="trainsListContainer">
-          <!-- Item 1 -->
-          <div class="train-card-item" onclick="openTrainDetails('7191', '20:10', '20:35', '«Ласточка/Финист»')">
-            <div class="train-time-row">
-              <div class="train-times-left">
-                <span class="train-t-depart">20:10</span>
-                <span class="train-t-dur">25 м</span>
-                <span class="train-t-arrive">20:35</span>
-              </div>
-              <div class="train-price-right">65 ₽</div>
-            </div>
-            <div class="train-type-title">«Ласточка/Финист»</div>
-            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
-          </div>
-
-          <!-- Item 2 -->
-          <div class="train-card-item" onclick="openTrainDetails('7191', '20:40', '21:07', '«Ласточка»')">
-            <span class="train-badge-soon">через 19 мин</span>
-            <div class="train-time-row">
-              <div class="train-times-left">
-                <span class="train-t-depart">20:40</span>
-                <span class="train-t-dur">27 м</span>
-                <span class="train-t-arrive">21:07</span>
-              </div>
-              <div class="train-price-right">65 ₽</div>
-            </div>
-            <div class="train-type-title">«Ласточка»</div>
-            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
-          </div>
-
-          <!-- Item 3 -->
-          <div class="train-card-item" onclick="openTrainDetails('6591', '21:30', '21:57', '«Ласточка/Финист»')">
-            <div class="train-time-row">
-              <div class="train-times-left">
-                <span class="train-t-depart">21:30</span>
-                <span class="train-t-dur">27 м</span>
-                <span class="train-t-arrive">21:57</span>
-              </div>
-              <div class="train-price-right">65 ₽</div>
-            </div>
-            <div class="train-type-title">«Ласточка/Финист»</div>
-            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Калище</div>
-          </div>
-
-          <!-- Item 4 -->
-          <div class="train-card-item" onclick="openTrainDetails('6593', '22:00', '22:26', 'Стандарт')">
-            <div class="train-time-row">
-              <div class="train-times-left">
-                <span class="train-t-depart">22:00</span>
-                <span class="train-t-dur">26 м</span>
-                <span class="train-t-arrive">22:26</span>
-              </div>
-              <div class="train-price-right">65 ₽</div>
-            </div>
-            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Калище</div>
-          </div>
-
-          <!-- Item 5 -->
-          <div class="train-card-item" onclick="openTrainDetails('6595', '22:05', '22:31', 'Стандарт')">
-            <div class="train-time-row">
-              <div class="train-times-left">
-                <span class="train-t-depart">22:05</span>
-                <span class="train-t-dur">26 м</span>
-                <span class="train-t-arrive">22:31</span>
-              </div>
-              <div class="train-price-right">65 ₽</div>
-            </div>
-            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
-          </div>
-        </div>
-
-        <!-- Ad Banner -->
-        <div class="ad-banner-kred" onclick="alert('Кредистория: Сервис бесплатной проверки кредитного рейтинга');">
-          <div class="ad-left">
-            <span class="ad-logo-icon">C</span>
-            <span>кредистория</span>
-          </div>
-          <div>Проверьте бесплатно ⓘ</div>
-        </div>
+        <!-- Dynamic Trains list -->
+        <div class="trains-list" id="trainsListContainer"></div>
       </div>
 
       <!-- Mode B: Ж/д билеты -->
@@ -1621,20 +1475,14 @@ body {
         <span class="tickets-tab-title">Билеты</span>
       </div>
 
-      <!-- Sub-pills: Мои билеты / Создать билет -->
-      <div class="tickets-subnav-pills">
-        <button class="tkt-subnav-btn active" id="btnSubMyTickets" onclick="switchTicketSubTab('my')">Мои билеты (<span id="tktCountBadge">0</span>)</button>
-        <button class="tkt-subnav-btn" id="btnSubCreateTicket" onclick="switchTicketSubTab('create')">Создать билет</button>
-      </div>
-
-      <!-- View 3.A: Мои билеты -->
+      <!-- View 3: Мои билеты -->
       <div id="subview-my-tickets">
         <!-- Empty state -->
         <div id="tktEmptyBox" style="padding: 10px 16px;">
-          <div style="text-align:center;margin-bottom:20px;">
+          <div style="text-align:center;margin-bottom:20px;padding-top:14px;">
             <div style="font-size:18px;font-weight:600;margin-bottom:6px;">Вы ещё не покупали билеты</div>
             <div style="font-size:14px;color:#9ca3af;line-height:1.4;">
-              Создайте билет в конструкторе или выберите направление аэроэкспресса
+              Билеты, созданные в приложении, появятся здесь
             </div>
           </div>
 
@@ -1642,75 +1490,13 @@ body {
           <button class="aero-quick-btn" onclick="quickCreateAero('Москва — Домодедово', '500')">Москва — Домодедово</button>
           <button class="aero-quick-btn" onclick="quickCreateAero('Москва — Внуково', '500')">Москва — Внуково</button>
 
-          <button class="btn-generate-main" style="margin-top:10px;" onclick="switchTicketSubTab('create')">
-            + Создать билет на пригородный поезд
+          <button class="btn-generate-main" style="margin-top:16px;" onclick="openTicketCreatorFromSettings()">
+            + Оформить билет
           </button>
         </div>
 
         <!-- Tickets list -->
         <div id="tktListBox" class="user-tickets-list" style="display:none;"></div>
-      </div>
-
-      <!-- View 3.B: Создать билет -->
-      <div id="subview-create-ticket" style="display:none;">
-        <div class="ticket-form-card">
-          <!-- From -->
-          <div class="tkt-form-field">
-            <label>Откуда</label>
-            <select id="formFromSelect" onchange="onStationDropdownChange('formFrom')">
-              <option value="Балтийский вокзал" selected>Балтийский вокзал</option>
-              <option value="Ленинский проспект">Ленинский проспект</option>
-              <option value="Сергиево (Володарская)">Сергиево (Володарская)</option>
-              <option value="Ораниенбаум-1">Ораниенбаум-1</option>
-              <option value="Ораниенбаум-2">Ораниенбаум-2</option>
-              <option value="custom">Свой вариант…</option>
-            </select>
-            <input type="text" id="formFromCustom" placeholder="Введите станцию отправления" style="display:none;margin-top:8px;">
-          </div>
-
-          <!-- Swap row + To -->
-          <div class="tkt-swap-row">
-            <div class="tkt-form-field">
-              <label>Куда</label>
-              <select id="formToSelect" onchange="onStationDropdownChange('formTo')">
-                <option value="Сергиево (Володарская)" selected>Сергиево (Володарская)</option>
-                <option value="Балтийский вокзал">Балтийский вокзал</option>
-                <option value="Ленинский проспект">Ленинский проспект</option>
-                <option value="Ораниенбаум-1">Ораниенбаум-1</option>
-                <option value="Ораниенбаум-2">Ораниенбаум-2</option>
-                <option value="custom">Свой вариант…</option>
-              </select>
-              <input type="text" id="formToCustom" placeholder="Введите станцию прибытия" style="display:none;margin-top:8px;">
-            </div>
-            <button class="tkt-swap-btn" onclick="swapFormStations()">⇅</button>
-          </div>
-
-          <!-- Date -->
-          <div class="tkt-form-field">
-            <label>Дата поездки</label>
-            <input type="date" id="formTripDate">
-          </div>
-
-          <!-- Type -->
-          <div class="tkt-form-field">
-            <label>Тип билета</label>
-            <select id="formTicketType">
-              <option value="lastochka">Билет на электричку «Ласточка»</option>
-              <option value="standart">Билет на электричку стандарт (обычный поезд)</option>
-            </select>
-          </div>
-
-          <!-- Price -->
-          <div class="tkt-form-field">
-            <label>Цена</label>
-            <div class="tkt-price-row">
-              <button type="button" id="formBtn65" class="btn-price-65" onclick="setFormPrice65()">65 ₽</button>
-              <input type="number" id="formCustomPrice" placeholder="Другая цена" min="1">
-            </div>
-          </div>
-
-          <button class="btn-generate-main" onclick="onGenerateTicketSubmit()">Создать билет</button>
-        </div>
       </div>
     </div>
 
@@ -1988,6 +1774,84 @@ body {
           <span class="setting-main-label">О приложении</span>
           <span style="color:#666;">&gt;</span>
         </div>
+
+        <div class="setting-row" style="cursor:pointer;" onclick="openTicketCreatorFromSettings()">
+          <span class="setting-main-label">Билет</span>
+          <span style="color:#666;">&gt;</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SCREEN: СОЗДАТЬ БИЛЕТ (Вызывается из Настройки -> Билет)
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-ticket-creator" class="screen-view">
+      <div class="creator-nav-bar">
+        <button class="btn-back-creator" onclick="closeTicketCreator()">‹</button>
+        <span class="creator-nav-title">Билет</span>
+        <div style="width:28px;"></div>
+      </div>
+
+      <div class="ticket-form-card">
+        <!-- From -->
+        <div class="tkt-form-field">
+          <label>Откуда</label>
+          <select id="formFromSelect" onchange="onStationDropdownChange('formFrom')">
+            <option value="Балтийский вокзал" selected>Балтийский вокзал</option>
+            <option value="Ленинский проспект">Ленинский проспект</option>
+            <option value="Сергиево (Володарская)">Сергиево (Володарская)</option>
+            <option value="Ораниенбаум-1">Ораниенбаум-1</option>
+            <option value="Ораниенбаум-2">Ораниенбаум-2</option>
+            <option value="custom">Свой вариант…</option>
+          </select>
+          <input type="text" id="formFromCustom" placeholder="Введите станцию отправления" style="display:none;margin-top:8px;">
+        </div>
+
+        <!-- Swap row + To -->
+        <div class="tkt-swap-row">
+          <div class="tkt-form-field">
+            <label>Куда</label>
+            <select id="formToSelect" onchange="onStationDropdownChange('formTo')">
+              <option value="Сергиево (Володарская)" selected>Сергиево (Володарская)</option>
+              <option value="Балтийский вокзал">Балтийский вокзал</option>
+              <option value="Ленинский проспект">Ленинский проспект</option>
+              <option value="Ораниенбаум-1">Ораниенбаум-1</option>
+              <option value="Ораниенбаум-2">Ораниенбаум-2</option>
+              <option value="custom">Свой вариант…</option>
+            </select>
+            <input type="text" id="formToCustom" placeholder="Введите станцию прибытия" style="display:none;margin-top:8px;">
+          </div>
+          <button class="tkt-swap-btn" onclick="swapFormStations()" title="Поменять местами">⇅</button>
+        </div>
+
+        <!-- Date -->
+        <div class="tkt-form-field">
+          <label>Дата поездки</label>
+          <input type="date" id="formTripDate">
+        </div>
+
+        <!-- Type -->
+        <div class="tkt-form-field">
+          <label>Тип билета</label>
+          <select id="formTicketType">
+            <option value="lastochka">Билет на электричку «Ласточка»</option>
+            <option value="standart">Билет на электричку стандарт (обычный поезд)</option>
+          </select>
+        </div>
+
+        <!-- Price -->
+        <div class="tkt-form-field">
+          <label>Цена билета</label>
+          <div class="tkt-price-row">
+            <button type="button" id="formBtn65" class="btn-price-65" onclick="setFormPrice65()">65 ₽</button>
+            <input type="number" id="formCustomPrice" placeholder="Другая цена (₽)" min="1">
+          </div>
+        </div>
+
+        <button class="btn-generate-main" onclick="onGenerateTicketSubmit()">
+          Сгенерировать билет
+        </button>
       </div>
     </div>
 
@@ -2008,15 +1872,6 @@ body {
         <div class="train-det-schedule-info">
           <div>Ежедневно</div>
           <div style="color:#9ca3af;">Кроме: Электродепо</div>
-        </div>
-      </div>
-
-      <!-- Blue Promo -->
-      <div class="ad-card-blue" onclick="alert('Кредистория: Бесплатный кредитный рейтинг');">
-        <span style="font-size:22px;">🎯</span>
-        <div>
-          <div class="ad-txt-1">Проверьте кредитную историю</div>
-          <div class="ad-txt-2">Бесплатно с Кредисторией ⓘ</div>
         </div>
       </div>
 
@@ -2325,7 +2180,11 @@ var PRESET_STATIONS = [
   { name: 'Сергиево (Володарская)', sub: 'Сергиево · Санкт-Петербург и Ленинградская область' },
   { name: 'Ленинский проспект', sub: 'Санкт-Петербург' },
   { name: 'Ораниенбаум-1', sub: 'Ломоносов · Санкт-Петербург' },
-  { name: 'Ораниенбаум-2', sub: 'Ломоносов · Санкт-Петербург' }
+  { name: 'Ораниенбаум-2', sub: 'Ломоносов · Санкт-Петербург' },
+  { name: 'Калище', sub: 'Сосновый Бор · Ленинградская область' },
+  { name: 'Гатчина-Балтийская', sub: 'Гатчина · Ленинградская область' },
+  { name: 'Гатчина-Варшавская', sub: 'Гатчина · Ленинградская область' },
+  { name: 'Красное Село', sub: 'Санкт-Петербург' }
 ];
 
 var RANDOM_USERNAMES = [
@@ -2335,29 +2194,195 @@ var RANDOM_USERNAMES = [
 var RANDOM_AVATARS = ['🐻', '🦊', '🐼', '🐯', '🦁', '🐱', '🐶', '🐺', '🦝', '🐨'];
 
 /* ──────────────────────────────────────────────────────────
+   COMPREHENSIVE TIMETABLE DATABASE (AUTHENTIC BALTIC DIRECTION)
+────────────────────────────────────────────────────────── */
+var OUTBOUND_SCHEDULE = [
+  { id: '7101', dep: '05:40', cat: '«Ласточка/Финист»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 25 },
+  { id: '7103', dep: '06:10', cat: '«Ласточка»', dest: 'Калище', durOran: 48, durSerg: 26 },
+  { id: '7105', dep: '06:20', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 27 },
+  { id: '6505', dep: '06:45', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 54, durSerg: 28 },
+  { id: '7107', dep: '07:05', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '7109', dep: '07:25', cat: '«Ласточка»', dest: 'Калище', durOran: 49, durSerg: 26 },
+  { id: '6509', dep: '07:45', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 28 },
+  { id: '7111', dep: '08:05', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6511', dep: '08:25', cat: 'Стандарт', dest: 'Калище', durOran: 55, durSerg: 27 },
+  { id: '7113', dep: '08:45', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6513', dep: '09:05', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7115', dep: '09:30', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6517', dep: '10:00', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7119', dep: '10:35', cat: '«Ласточка»', dest: 'Калище', durOran: 49, durSerg: 26 },
+  { id: '6521', dep: '11:15', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7123', dep: '11:55', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6525', dep: '12:35', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7127', dep: '13:15', cat: '«Ласточка»', dest: 'Калище', durOran: 49, durSerg: 26 },
+  { id: '6529', dep: '13:50', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7131', dep: '14:30', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6533', dep: '15:05', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7135', dep: '15:40', cat: '«Ласточка»', dest: 'Калище', durOran: 49, durSerg: 26 },
+  { id: '7139', dep: '16:15', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6541', dep: '16:45', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7143', dep: '17:10', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '7145', dep: '17:30', cat: '«Ласточка»', dest: 'Калище', durOran: 49, durSerg: 26 },
+  { id: '6547', dep: '17:50', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7149', dep: '18:10', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '7151', dep: '18:30', cat: '«Ласточка»', dest: 'Калище', durOran: 49, durSerg: 26 },
+  { id: '6553', dep: '18:50', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '7155', dep: '19:15', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6557', dep: '19:40', cat: 'Стандарт', dest: 'Калище', durOran: 55, durSerg: 27 },
+  { id: '7191', dep: '20:10', cat: '«Ласточка/Финист»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 25 },
+  { id: '7193', dep: '20:40', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 56, durSerg: 27 },
+  { id: '6589', dep: '21:05', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 55, durSerg: 27 },
+  { id: '6591', dep: '21:30', cat: '«Ласточка/Финист»', dest: 'Калище', durOran: 50, durSerg: 27 },
+  { id: '6593', dep: '22:00', cat: 'Стандарт', dest: 'Калище', durOran: 52, durSerg: 26 },
+  { id: '6595', dep: '22:05', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 54, durSerg: 26 },
+  { id: '7197', dep: '22:35', cat: '«Ласточка»', dest: 'Ораниенбаум-1', durOran: 48, durSerg: 26 },
+  { id: '6597', dep: '23:05', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 53, durSerg: 27 },
+  { id: '6599', dep: '23:55', cat: 'Стандарт', dest: 'Ораниенбаум-1', durOran: 53, durSerg: 27 }
+];
+
+var INBOUND_SCHEDULE = [
+  { id: '6502', dep: '05:25', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 54, durSerg: 27 },
+  { id: '6504', dep: '05:50', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 54, durSerg: 27 },
+  { id: '7102', dep: '06:15', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6506', dep: '06:38', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 28 },
+  { id: '7104', dep: '07:00', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '7106', dep: '07:22', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6508', dep: '07:44', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 54, durSerg: 27 },
+  { id: '7108', dep: '08:08', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '6510', dep: '08:30', cat: 'Стандарт', orig: 'Калище', durBalt: 55, durSerg: 28 },
+  { id: '7112', dep: '08:55', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '6514', dep: '09:20', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7116', dep: '09:50', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '6518', dep: '10:25', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7120', dep: '11:00', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6522', dep: '11:40', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7124', dep: '12:20', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '6526', dep: '13:00', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7128', dep: '13:40', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6530', dep: '14:20', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7132', dep: '15:00', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '6534', dep: '15:35', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7136', dep: '16:10', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6538', dep: '16:45', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7140', dep: '17:15', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '7142', dep: '17:40', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6544', dep: '18:05', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7146', dep: '18:30', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '7148', dep: '18:55', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6550', dep: '19:25', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7152', dep: '19:55', cat: '«Ласточка»', orig: 'Ораниенбаум-1', durBalt: 48, durSerg: 25 },
+  { id: '6554', dep: '20:25', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '7156', dep: '21:00', cat: '«Ласточка»', orig: 'Калище', durBalt: 48, durSerg: 25 },
+  { id: '6558', dep: '21:35', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '6560', dep: '22:15', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '6562', dep: '22:55', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 },
+  { id: '6564', dep: '23:40', cat: 'Стандарт', orig: 'Ораниенбаум-1', durBalt: 55, durSerg: 27 }
+];
+
+var ALL_BOARD_DEPARTURES = [
+  { id: '6302', time: '00:12', arrTime: '00:54', category: 'Стандарт', dest: 'Балтийский вокзал', route: 'Красное Село — Санкт-Петербург (Балтийский вокзал)', track: '2', tag: 'red' },
+  { id: '7101', time: '05:40', arrTime: '06:28', category: '«Ласточка/Финист»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '6311', time: '05:55', arrTime: '06:58', category: 'Стандарт', dest: 'Гатчина-Варшавская', route: 'Санкт-Петербург (Балтийский вокзал) — Гатчина-Варшавская', track: '1' },
+  { id: '6313', time: '06:05', arrTime: '07:35', category: 'Стандарт', dest: 'Сиверская', route: 'Санкт-Петербург (Балтийский вокзал) — Сиверская', track: '3' },
+  { id: '7103', time: '06:10', arrTime: '07:44', category: '«Ласточка»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '6314', time: '06:10', arrTime: '07:15', category: 'Стандарт', dest: 'Балтийский вокзал', route: 'Гатчина-Балтийская — Санкт-Петербург (Балтийский вокзал)', track: '2', tag: 'red' },
+  { id: '7105', time: '06:20', arrTime: '07:08', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7107', time: '06:25', arrTime: '08:02', category: '«Ласточка/Финист»', dest: 'Балтийский вокзал', route: 'Калище — Санкт-Петербург (Балтийский вокзал)', track: '2', tag: 'red' },
+  { id: '6317', time: '06:25', arrTime: '07:32', category: 'Стандарт', dest: 'Гатчина-Балтийская', route: 'Санкт-Петербург (Балтийский вокзал) — Гатчина-Балтийская', track: '1' },
+  { id: '6505', time: '06:45', arrTime: '07:39', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '7107', time: '07:05', arrTime: '07:53', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7109', time: '07:25', arrTime: '08:58', category: '«Ласточка»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '6509', time: '07:45', arrTime: '08:40', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '7111', time: '08:05', arrTime: '08:53', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '6325', time: '08:15', arrTime: '09:20', category: 'Стандарт', dest: 'Гатчина-Варшавская', route: 'Санкт-Петербург (Балтийский вокзал) — Гатчина-Варшавская', track: '1' },
+  { id: '6511', time: '08:25', arrTime: '10:00', category: 'Стандарт', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '7113', time: '08:45', arrTime: '09:33', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '6513', time: '09:05', arrTime: '10:00', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7115', time: '09:30', arrTime: '10:18', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '6517', time: '10:00', arrTime: '10:55', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '7119', time: '10:35', arrTime: '12:08', category: '«Ласточка»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '6521', time: '11:15', arrTime: '12:10', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7123', time: '11:55', arrTime: '12:43', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '6525', time: '12:35', arrTime: '13:30', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '7127', time: '13:15', arrTime: '14:48', category: '«Ласточка»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '6529', time: '13:50', arrTime: '14:45', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7131', time: '14:30', arrTime: '15:18', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '6533', time: '15:05', arrTime: '16:00', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '7135', time: '15:40', arrTime: '17:14', category: '«Ласточка»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '7139', time: '16:15', arrTime: '17:03', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '6541', time: '16:45', arrTime: '17:40', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '7143', time: '17:10', arrTime: '17:58', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7145', time: '17:30', arrTime: '19:04', category: '«Ласточка»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '6547', time: '17:50', arrTime: '18:45', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '7149', time: '18:10', arrTime: '18:58', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '7151', time: '18:30', arrTime: '20:04', category: '«Ласточка»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '6553', time: '18:50', arrTime: '19:45', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7155', time: '19:15', arrTime: '20:03', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '6557', time: '19:40', arrTime: '21:15', category: 'Стандарт', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '7191', time: '20:10', arrTime: '20:58', category: '«Ласточка/Финист»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7193', time: '20:40', arrTime: '21:36', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '6589', time: '21:05', arrTime: '22:00', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '6591', time: '21:30', arrTime: '23:04', category: '«Ласточка/Финист»', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '5' },
+  { id: '6593', time: '22:00', arrTime: '23:35', category: 'Стандарт', dest: 'Калище', route: 'Санкт-Петербург (Балтийский вокзал) — Калище', track: '1' },
+  { id: '6595', time: '22:05', arrTime: '22:59', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' },
+  { id: '7197', time: '22:35', arrTime: '23:23', category: '«Ласточка»', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '3' },
+  { id: '6597', time: '23:05', arrTime: '23:58', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '2' },
+  { id: '6599', time: '23:55', arrTime: '00:48', category: 'Стандарт', dest: 'Ораниенбаум-1', route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1', track: '4' }
+];
+
+/* ──────────────────────────────────────────────────────────
+   TIME HELPER FUNCTIONS
+────────────────────────────────────────────────────────── */
+function timeToMinutes(tStr){
+  if(!tStr) return 0;
+  var p = tStr.split(':');
+  return parseInt(p[0], 10) * 60 + parseInt(p[1], 10);
+}
+
+function minutesToTime(m){
+  m = (m % 1440 + 1440) % 1440;
+  var h = Math.floor(m / 60);
+  var min = m % 60;
+  return (h < 10 ? '0' : '') + h + ':' + (min < 10 ? '0' : '') + min;
+}
+
+function addMinutes(tStr, mins){
+  return minutesToTime(timeToMinutes(tStr) + mins);
+}
+
+function diffMinutes(t1, t2){
+  var m1 = timeToMinutes(t1);
+  var m2 = timeToMinutes(t2);
+  if(m2 < m1) m2 += 1440;
+  return (m2 - m1) + ' м';
+}
+
+/* ──────────────────────────────────────────────────────────
    INITIALIZATION
 ────────────────────────────────────────────────────────── */
 window.addEventListener('DOMContentLoaded', function(){
-  initLiveClock();
   initProfile();
   initDateInputs();
   loadSavedTickets();
   loadSavedFavorites();
   loadTogglePrefs();
   setupBarcodeFlip();
+  initLiveScheduleTimer();
+  renderTrainsList();
+  renderScheduleBoard();
   switchMainTab('routes'); // Clean initial state
 });
 
-function initLiveClock(){
-  function updateTime(){
-    var now = new Date();
-    var h = String(now.getHours()).padStart(2, '0');
-    var m = String(now.getMinutes()).padStart(2, '0');
-    var el = document.getElementById('liveTime');
-    if(el) el.textContent = h + ':' + m;
-  }
-  updateTime();
-  setInterval(updateTime, 30000);
+function initLiveScheduleTimer(){
+  setInterval(function(){
+    if(APP_STATE.routeDatePill === 'today'){
+      renderTrainsList();
+    }
+    var pToday = document.getElementById('schPillToday');
+    if(pToday && pToday.classList.contains('active')){
+      renderScheduleBoard();
+    }
+  }, 30000);
 }
 
 function initDateInputs(){
@@ -2370,24 +2395,21 @@ function initDateInputs(){
 }
 
 /* ──────────────────────────────────────────────────────────
-   CLEAN SCREEN MANAGEMENT (FIXES TAB DUPLICATION & STACKING BUG)
+   CLEAN SCREEN MANAGEMENT
 ────────────────────────────────────────────────────────── */
 function showScreen(screenId){
-  // 1. Hide all screens explicitly (removes both inline style and active class)
   var allScreens = document.querySelectorAll('.screen-view, .train-details-view');
   allScreens.forEach(function(s){
     s.classList.remove('active');
     s.style.display = 'none';
   });
 
-  // 2. Show the targeted screen cleanly
   var target = document.getElementById(screenId);
   if(target){
     target.classList.add('active');
     target.style.display = 'block';
   }
 
-  // Scroll content to top
   var content = document.querySelector('.content-area');
   if(content) content.scrollTop = 0;
 }
@@ -2396,7 +2418,6 @@ function switchMainTab(tabKey){
   APP_STATE.currentTab = tabKey;
   showScreen('screen-' + tabKey);
 
-  // Update bottom tab buttons styling
   var tabButtons = document.querySelectorAll('.tab-item-btn');
   tabButtons.forEach(function(btn){ btn.classList.remove('active'); });
 
@@ -2409,92 +2430,204 @@ function switchMainTab(tabKey){
   };
   var activeBtn = document.getElementById(map[tabKey]);
   if(activeBtn) activeBtn.classList.add('active');
+
+  if(tabKey === 'routes'){
+    renderTrainsList();
+  } else if(tabKey === 'schedule'){
+    renderScheduleBoard();
+  } else if(tabKey === 'tickets'){
+    renderUserTickets();
+  }
 }
 
 /* ──────────────────────────────────────────────────────────
-   PROFILE / ACCOUNT: RANDOM & CUSTOM
+   TAB 1: ROUTES & REAL-TIME SCHEDULE FILTERING
 ────────────────────────────────────────────────────────── */
-function initProfile(){
-  var savedUser = localStorage.getItem('y_tkt_user');
-  var savedAvatar = localStorage.getItem('y_tkt_avatar');
+function getTrainsForRoute(from, to){
+  var f = (from || '').toLowerCase();
+  var t = (to || '').toLowerCase();
+  var list = [];
 
-  if(savedUser && savedAvatar){
-    APP_STATE.username = savedUser;
-    APP_STATE.selectedAvatar = savedAvatar;
+  var isOutbound = (f.indexOf('балтийск') !== -1 || f.indexOf('ленинск') !== -1) &&
+                   (t.indexOf('сергиев') !== -1 || t.indexOf('ораниенбаум') !== -1 || t.indexOf('калище') !== -1 || t.indexOf('володарск') !== -1);
+  var isInbound = (f.indexOf('сергиев') !== -1 || f.indexOf('ораниенбаум') !== -1 || f.indexOf('калище') !== -1 || f.indexOf('володарск') !== -1) &&
+                  (t.indexOf('балтийск') !== -1 || t.indexOf('ленинск') !== -1);
+
+  if(isOutbound){
+    OUTBOUND_SCHEDULE.forEach(function(item){
+      var isLast = item.cat.indexOf('Ласточка') !== -1;
+      var depMins = timeToMinutes(item.dep);
+      if(f.indexOf('ленинск') !== -1){
+        depMins += (isLast ? 10 : 12);
+      }
+      var depStr = minutesToTime(depMins);
+
+      var arrMins = timeToMinutes(item.dep);
+      if(t.indexOf('сергиев') !== -1 || t.indexOf('володарск') !== -1){
+        arrMins += item.durSerg;
+      } else if(t.indexOf('ораниенбаум-2') !== -1){
+        arrMins += item.durOran + 5;
+      } else {
+        arrMins += item.durOran;
+      }
+      var arrStr = minutesToTime(arrMins);
+      var dur = diffMinutes(depStr, arrStr);
+
+      list.push({
+        id: item.id,
+        category: item.cat,
+        categoryTitle: item.cat,
+        depart: depStr,
+        arrive: arrStr,
+        dur: dur,
+        price: 65,
+        fullRoute: 'Санкт-Петербург (Балтийский вокзал) — ' + item.dest,
+        from: from,
+        to: to
+      });
+    });
+  } else if(isInbound){
+    INBOUND_SCHEDULE.forEach(function(item){
+      var isLast = item.cat.indexOf('Ласточка') !== -1;
+      var depMins = timeToMinutes(item.dep);
+      if(f.indexOf('сергиев') !== -1 || f.indexOf('володарск') !== -1){
+        depMins += (item.durBalt - item.durSerg);
+      }
+      var depStr = minutesToTime(depMins);
+
+      var arrMins = timeToMinutes(item.dep) + item.durBalt;
+      if(t.indexOf('ленинск') !== -1){
+        arrMins -= (isLast ? 10 : 12);
+      }
+      var arrStr = minutesToTime(arrMins);
+      var dur = diffMinutes(depStr, arrStr);
+
+      list.push({
+        id: item.id,
+        category: item.cat,
+        categoryTitle: item.cat,
+        depart: depStr,
+        arrive: arrStr,
+        dur: dur,
+        price: 65,
+        fullRoute: item.orig + ' — Санкт-Петербург (Балтийский вокзал)',
+        from: from,
+        to: to
+      });
+    });
   } else {
-    randomizeProfile(false);
-  }
-  updateProfileDisplay();
-}
-
-function randomizeProfile(save){
-  var rIdx = Math.floor(Math.random() * RANDOM_USERNAMES.length);
-  APP_STATE.username = RANDOM_USERNAMES[rIdx];
-  APP_STATE.selectedAvatar = RANDOM_AVATARS[rIdx % RANDOM_AVATARS.length];
-  
-  var input = document.getElementById('profModalInput');
-  if(input) input.value = APP_STATE.username;
-  
-  highlightSelectedAvatar(APP_STATE.selectedAvatar);
-  if(save !== false){
-    localStorage.setItem('y_tkt_user', APP_STATE.username);
-    localStorage.setItem('y_tkt_avatar', APP_STATE.selectedAvatar);
-    updateProfileDisplay();
-  }
-}
-
-function updateProfileDisplay(){
-  var uEl = document.getElementById('displayUsername');
-  var aEl = document.getElementById('displayAvatarIcon');
-  if(uEl) uEl.textContent = APP_STATE.username;
-  if(aEl) aEl.textContent = APP_STATE.selectedAvatar;
-}
-
-function openProfileModal(){
-  var m = document.getElementById('profileModal');
-  var inp = document.getElementById('profModalInput');
-  if(inp) inp.value = APP_STATE.username;
-  highlightSelectedAvatar(APP_STATE.selectedAvatar);
-  if(m) m.classList.add('active');
-}
-
-function closeProfileModal(){
-  var m = document.getElementById('profileModal');
-  if(m) m.classList.remove('active');
-}
-
-function pickAvatarEmoji(emoji, btnEl){
-  APP_STATE.selectedAvatar = emoji;
-  var all = document.querySelectorAll('.avatar-opt-btn');
-  all.forEach(function(b){ b.classList.remove('selected'); });
-  if(btnEl) btnEl.classList.add('selected');
-}
-
-function highlightSelectedAvatar(emoji){
-  var all = document.querySelectorAll('.avatar-opt-btn');
-  all.forEach(function(b){
-    if(b.textContent.trim() === emoji){
-      b.classList.add('selected');
-    } else {
-      b.classList.remove('selected');
+    // Other pairs or custom stations
+    var baseInterval = 30;
+    for(var i=0; i<36; i++){
+      var depM = 340 + i * baseInterval;
+      if(depM >= 1440) break;
+      var isLast = (i % 3 === 0);
+      var cat = isLast ? '«Ласточка»' : 'Стандарт';
+      var durNum = isLast ? 26 : 32;
+      var dStr = minutesToTime(depM);
+      var aStr = minutesToTime(depM + durNum);
+      list.push({
+        id: String(6500 + i * 2),
+        category: cat,
+        categoryTitle: cat,
+        depart: dStr,
+        arrive: aStr,
+        dur: durNum + ' м',
+        price: 65,
+        fullRoute: from + ' — ' + to,
+        from: from,
+        to: to
+      });
     }
+  }
+  return list;
+}
+
+function renderTrainsList(){
+  var container = document.getElementById('trainsListContainer');
+  if(!container) return;
+
+  var from = APP_STATE.routeFrom;
+  var to = APP_STATE.routeTo;
+  var allTrains = getTrainsForRoute(from, to);
+
+  // Filter by category
+  if(APP_STATE.selectedTrainFilter === 'Только Ласточка'){
+    allTrains = allTrains.filter(function(t){ return t.category.indexOf('Ласточка') !== -1; });
+  } else if(APP_STATE.selectedTrainFilter === 'Стандартные'){
+    allTrains = allTrains.filter(function(t){ return t.category.indexOf('Стандарт') !== -1; });
+  }
+
+  var now = new Date();
+  var currentMins = now.getHours() * 60 + now.getMinutes();
+  var isToday = (APP_STATE.routeDatePill === 'today');
+
+  var displayTrains = allTrains;
+  if(isToday){
+    // HIDE PAST TRAINS
+    displayTrains = allTrains.filter(function(t){
+      return timeToMinutes(t.depart) >= currentMins;
+    });
+  }
+
+  container.innerHTML = '';
+
+  if(displayTrains.length === 0){
+    var emptyCard = document.createElement('div');
+    emptyCard.style.cssText = 'padding: 32px 16px; text-align: center; color: var(--text-muted);';
+    if(isToday){
+      emptyCard.innerHTML =
+        '<div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;">Поезда на сегодня уже ушли</div>' +
+        '<div style="font-size:13px;line-height:1.4;margin-bottom:16px;">Посмотрите расписание на завтра или на все дни</div>' +
+        '<button class="date-pill active" style="margin:0 auto;" onclick="selectDatePill(\'tomorrow\')">Показать на завтра</button>';
+    } else {
+      emptyCard.innerHTML =
+        '<div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;">Поезда не найдены</div>' +
+        '<div style="font-size:13px;line-height:1.4;">Попробуйте выбрать другой фильтр или направление</div>';
+    }
+    container.appendChild(emptyCard);
+    return;
+  }
+
+  var nearestMarked = false;
+  displayTrains.forEach(function(t){
+    var badgeHtml = '';
+    if(isToday && !nearestMarked){
+      var diff = timeToMinutes(t.depart) - currentMins;
+      if(diff >= 1 && diff <= 90){
+        badgeHtml = '<span class="train-badge-soon">через ' + diff + ' мин</span>';
+        nearestMarked = true;
+      } else if(diff === 0){
+        badgeHtml = '<span class="train-badge-soon" style="background:#e11d48;">отправляется</span>';
+        nearestMarked = true;
+      }
+    }
+
+    var card = document.createElement('div');
+    card.className = 'train-card-item';
+    card.onclick = function(){
+      openTrainDetails(t.id, t.depart, t.arrive, t.category, t.fullRoute);
+    };
+
+    var typeTitleHtml = t.categoryTitle ? '<div class="train-type-title">' + escapeHtml(t.categoryTitle) + '</div>' : '';
+
+    card.innerHTML =
+      badgeHtml +
+      '<div class="train-time-row">' +
+        '<div class="train-times-left">' +
+          '<span class="train-t-depart">' + t.depart + '</span>' +
+          '<span class="train-t-dur">' + t.dur + '</span>' +
+          '<span class="train-t-arrive">' + t.arrive + '</span>' +
+        '</div>' +
+        '<div class="train-price-right">' + (t.price || 65) + ' ₽</div>' +
+      '</div>' +
+      typeTitleHtml +
+      '<div class="train-route-title">' + escapeHtml(t.fullRoute) + '</div>';
+
+    container.appendChild(card);
   });
 }
 
-function saveProfileChanges(){
-  var inp = document.getElementById('profModalInput');
-  if(inp && inp.value.trim()){
-    APP_STATE.username = inp.value.trim();
-  }
-  localStorage.setItem('y_tkt_user', APP_STATE.username);
-  localStorage.setItem('y_tkt_avatar', APP_STATE.selectedAvatar);
-  updateProfileDisplay();
-  closeProfileModal();
-}
-
-/* ──────────────────────────────────────────────────────────
-   TAB 1: ROUTES
-────────────────────────────────────────────────────────── */
 function switchRouteSubTab(sub){
   APP_STATE.activeRouteSubTab = sub;
   var pElek = document.getElementById('pillElek');
@@ -2511,7 +2644,7 @@ function switchRouteSubTab(sub){
     pTrain.classList.add('active');
     pElek.classList.remove('active');
     cTrain.style.display = 'block';
-    cElek.style.display = 'none';
+    cTrain.style.display = 'none';
   }
 }
 
@@ -2521,6 +2654,7 @@ function swapRouteStations(){
   APP_STATE.routeTo = t;
   document.getElementById('routeFromDisplay').textContent = APP_STATE.routeFrom;
   document.getElementById('routeToDisplay').textContent = APP_STATE.routeTo;
+  renderTrainsList();
 }
 
 function selectDatePill(pill){
@@ -2529,13 +2663,15 @@ function selectDatePill(pill){
   var bTom = document.getElementById('datePillTomorrow');
   var bAll = document.getElementById('datePillAll');
 
-  bToday.classList.remove('active');
-  bTom.classList.remove('active');
-  bAll.classList.remove('active');
+  if(bToday) bToday.classList.remove('active');
+  if(bTom) bTom.classList.remove('active');
+  if(bAll) bAll.classList.remove('active');
 
-  if(pill === 'today') bToday.classList.add('active');
-  if(pill === 'tomorrow') bTom.classList.add('active');
-  if(pill === 'all') bAll.classList.add('active');
+  if(pill === 'today' && bToday) bToday.classList.add('active');
+  if(pill === 'tomorrow' && bTom) bTom.classList.add('active');
+  if(pill === 'all' && bAll) bAll.classList.add('active');
+
+  renderTrainsList();
 }
 
 function cycleDatePills(){
@@ -2554,6 +2690,7 @@ function toggleTrainFilter(){
     APP_STATE.selectedTrainFilter = 'Все поезда';
   }
   if(txt) txt.textContent = APP_STATE.selectedTrainFilter;
+  renderTrainsList();
 }
 
 /* ──────────────────────────────────────────────────────────
@@ -2610,10 +2747,11 @@ function selectStationItem(name){
     document.getElementById('routeToDisplay').textContent = name;
   }
   closeStationModal();
+  renderTrainsList();
 }
 
 /* ──────────────────────────────────────────────────────────
-   TRAIN DETAILS VIEW («Поезд 7191»)
+   TRAIN DETAILS VIEW & TIMELINE
 ────────────────────────────────────────────────────────── */
 var CURRENT_TRAIN_DETAILS = {
   id: '7191',
@@ -2622,16 +2760,17 @@ var CURRENT_TRAIN_DETAILS = {
   arrive: '21:07'
 };
 
-function openTrainDetails(trainId, dep, arr, cat){
+function openTrainDetails(trainId, dep, arr, cat, fullRoute){
   CURRENT_TRAIN_DETAILS.id = trainId;
   CURRENT_TRAIN_DETAILS.depart = dep;
   CURRENT_TRAIN_DETAILS.arrive = arr;
-  CURRENT_TRAIN_DETAILS.category = cat;
+  CURRENT_TRAIN_DETAILS.category = cat || 'Стандарт';
 
   document.getElementById('detTrainIdTitle').textContent = 'Поезд ' + trainId;
-  document.getElementById('detCategory').textContent = cat.toUpperCase();
-  document.getElementById('detRouteBig').textContent = APP_STATE.routeFrom + ' — ' + APP_STATE.routeTo;
+  document.getElementById('detCategory').textContent = (cat || '«ЛАСТОЧКА»').toUpperCase();
+  document.getElementById('detRouteBig').textContent = fullRoute || (APP_STATE.routeFrom + ' — ' + APP_STATE.routeTo);
 
+  buildDynamicTimeline(dep, arr, fullRoute);
   showScreen('screen-train-details');
 }
 
@@ -2639,9 +2778,71 @@ function closeTrainDetails(){
   showScreen('screen-' + APP_STATE.currentTab);
 }
 
+function buildDynamicTimeline(dep, arr, fullRoute){
+  var timeline = document.getElementById('timelineList');
+  if(!timeline) return;
+
+  var depM = timeToMinutes(dep);
+  var arrM = timeToMinutes(arr);
+  if(arrM < depM) arrM += 1440;
+
+  var stops = [
+    { name: 'Санкт-Петербург (Балтийский вокзал)', mins: 0, sub: '☁️ +5° как +3°' },
+    { name: 'Броневая', mins: 8 },
+    { name: 'Ленинский Проспект', mins: 12 },
+    { name: 'Дачное', mins: 15 },
+    { name: 'Ульянка', mins: 18 },
+    { name: 'Лигово', mins: 22 },
+    { name: 'Сосновая Поляна', mins: 25 },
+    { name: 'Сергиево (Володарская)', mins: 28, sub: '☁️ +5° как +3°' },
+    { name: 'Стрельна', mins: 34, middle: true },
+    { name: 'Красные Зори', mins: 38, middle: true },
+    { name: 'Новый Петергоф', mins: 42, middle: true },
+    { name: 'Старый Петергоф', mins: 46, middle: true },
+    { name: 'Университет', mins: 50, middle: true },
+    { name: 'Мартышкино', mins: 53, middle: true },
+    { name: 'Ораниенбаум-1', mins: Math.max(56, arrM - depM) }
+  ];
+
+  var mainHtml = '';
+  var middleHtml = '';
+
+  stops.forEach(function(st, idx){
+    var stTime = minutesToTime(depM + st.mins);
+    var subHtml = st.sub ? '<div class="timeline-st-sub">' + st.sub + '</div>' : '';
+
+    var row =
+      '<div class="timeline-row">' +
+        '<div class="timeline-time-col">' + stTime + '</div>' +
+        '<div class="timeline-line-col">' +
+          (idx < stops.length - 1 ? '<div class="timeline-rail-bar"></div>' : '') +
+          '<div class="timeline-dot"></div>' +
+        '</div>' +
+        '<div class="timeline-name-col">' +
+          '<div class="timeline-st-name">' + escapeHtml(st.name) + '</div>' +
+          subHtml +
+        '</div>' +
+      '</div>';
+
+    if(st.middle){
+      middleHtml += row;
+    } else {
+      if(idx === 14 && middleHtml){
+        mainHtml += '<div id="hiddenStopsBlock" style="display:none;">' + middleHtml + '</div>';
+        mainHtml += '<div style="padding-left:114px;"><span class="timeline-expand-btn" id="btnToggleStops" onclick="toggleTimelineMiddleStops()">Показать 6 станций ∨</span></div>';
+        middleHtml = '';
+      }
+      mainHtml += row;
+    }
+  });
+
+  timeline.innerHTML = mainHtml;
+}
+
 function toggleTimelineMiddleStops(){
   var block = document.getElementById('hiddenStopsBlock');
   var btn = document.getElementById('btnToggleStops');
+  if(!block || !btn) return;
   if(block.style.display === 'none'){
     block.style.display = 'block';
     btn.textContent = 'Скрыть промежуточные станции ∧';
@@ -2653,8 +2854,7 @@ function toggleTimelineMiddleStops(){
 
 function openTicketCreatorFromTrain(){
   closeTrainDetails();
-  switchMainTab('tickets');
-  switchTicketSubTab('create');
+  showScreen('screen-ticket-creator');
   setDropdownOrCustom('formFrom', APP_STATE.routeFrom);
   setDropdownOrCustom('formTo', APP_STATE.routeTo);
 }
@@ -2734,28 +2934,16 @@ function clearFavorites(){
 }
 
 /* ──────────────────────────────────────────────────────────
-   TAB 3: TICKETS (GENERATOR + LIST + FULL AUTHENTIC VIEWER)
+   TICKET CREATOR (FROM SETTINGS -> «БИЛЕТ»)
 ────────────────────────────────────────────────────────── */
 var _formPrice65 = true;
 
-function switchTicketSubTab(sub){
-  var btnMy = document.getElementById('btnSubMyTickets');
-  var btnCreate = document.getElementById('btnSubCreateTicket');
-  var vMy = document.getElementById('subview-my-tickets');
-  var vCreate = document.getElementById('subview-create-ticket');
+function openTicketCreatorFromSettings(){
+  showScreen('screen-ticket-creator');
+}
 
-  if(sub === 'my'){
-    btnMy.classList.add('active');
-    btnCreate.classList.remove('active');
-    vMy.style.display = 'block';
-    vCreate.style.display = 'none';
-    renderUserTickets();
-  } else {
-    btnCreate.classList.add('active');
-    btnMy.classList.remove('active');
-    vCreate.style.display = 'block';
-    vMy.style.display = 'none';
-  }
+function closeTicketCreator(){
+  showScreen('screen-settings');
 }
 
 function onStationDropdownChange(prefix){
@@ -2781,6 +2969,7 @@ function swapFormStations(){
 function setDropdownOrCustom(prefix, stationName){
   var sel = document.getElementById(prefix + 'Select');
   var cust = document.getElementById(prefix + 'Custom');
+  if(!sel || !cust) return;
   var found = false;
 
   for(var i=0; i<sel.options.length; i++){
@@ -2801,8 +2990,9 @@ function setDropdownOrCustom(prefix, stationName){
 function getStationValue(prefix){
   var sel = document.getElementById(prefix + 'Select');
   var cust = document.getElementById(prefix + 'Custom');
+  if(!sel) return 'Станция';
   if(sel.value === 'custom'){
-    return cust.value.trim() || 'Станция';
+    return (cust ? cust.value.trim() : '') || 'Станция';
   }
   return sel.value;
 }
@@ -2834,32 +3024,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 
-function quickCreateAero(route, price){
-  var parts = route.split(' — ');
-  createTicketData({
-    from: parts[0],
-    to: parts[1],
-    date: new Date().toISOString().split('T')[0],
-    type: 'lastochka',
-    price: price
-  });
-  switchTicketSubTab('my');
-}
-
-function quickCreateFromSchedule(from, to, price, type){
-  createTicketData({
-    from: from,
-    to: to,
-    date: new Date().toISOString().split('T')[0],
-    type: type || 'lastochka',
-    price: price || '65'
-  });
-  switchMainTab('tickets');
-  switchTicketSubTab('my');
-  // Immediately show the newly created ticket
-  openTicketViewer(APP_STATE.tickets[APP_STATE.tickets.length - 1]);
-}
-
 function onGenerateTicketSubmit(){
   var from = getStationValue('formFrom');
   var to = getStationValue('formTo');
@@ -2874,7 +3038,7 @@ function onGenerateTicketSubmit(){
   var customPrice = document.getElementById('formCustomPrice').value.trim();
   var price = (_formPrice65 || !customPrice) ? '65' : customPrice;
 
-  createTicketData({
+  var newTkt = createTicketData({
     from: from,
     to: to,
     date: dateVal,
@@ -2882,8 +3046,10 @@ function onGenerateTicketSubmit(){
     price: price
   });
 
-  switchTicketSubTab('my');
-  openTicketViewer(APP_STATE.tickets[APP_STATE.tickets.length - 1]);
+  // Switch to Tab 3 (Билеты)
+  switchMainTab('tickets');
+  // Immediately show the newly created ticket in authentic view
+  openTicketViewer(newTkt);
 }
 
 function createTicketData(item){
@@ -2950,7 +3116,7 @@ function renderUserTickets(){
 
       var card = document.createElement('div');
       card.className = 'user-ticket-card';
-      card.innerHTML = 
+      card.innerHTML =
         '<button class="tkt-card-del" onclick="deleteTicket(\'' + t.id + '\', event)">✕</button>' +
         '<div class="tkt-card-route">' + escapeHtml(t.from) + ' — ' + escapeHtml(t.to) + '</div>' +
         '<div class="tkt-card-meta">' + typeTitle + ' • ' + dStr + ' • ' + t.price + ' ₽</div>' +
@@ -2962,8 +3128,33 @@ function renderUserTickets(){
   }
 }
 
+function quickCreateAero(route, price){
+  var parts = route.split(' — ');
+  var newT = createTicketData({
+    from: parts[0],
+    to: parts[1],
+    date: new Date().toISOString().split('T')[0],
+    type: 'lastochka',
+    price: price
+  });
+  renderUserTickets();
+  openTicketViewer(newT);
+}
+
+function quickCreateFromSchedule(from, to, price, type){
+  var newT = createTicketData({
+    from: from,
+    to: to,
+    date: new Date().toISOString().split('T')[0],
+    type: type || 'lastochka',
+    price: price || '65'
+  });
+  switchMainTab('tickets');
+  openTicketViewer(newT);
+}
+
 /* ──────────────────────────────────────────────────────────
-   AUTHENTIC TICKET VIEWER (EXACT LAYOUT & ANIMATION FROM ticket.html)
+   AUTHENTIC TICKET VIEWER (EXACT LAYOUT FROM ticket.html)
 ────────────────────────────────────────────────────────── */
 var spinning = false;
 
@@ -2984,7 +3175,6 @@ function openTicketViewer(tkt){
       ? 'Билет на электричку «Ласточка»'
       : 'Билет на электричку стандарт (обычный пригородный поезд)';
 
-  // Pick Barcode (from barcodes.js or fallback)
   var barcodeSrc = '';
   if(window.BARCODES && window.BARCODES.length > 0){
     var idx = Math.floor(Math.random() * window.BARCODES.length);
@@ -3061,28 +3251,29 @@ function selectSchDate(pill){
   var pAll = document.getElementById('schPillAll');
   var head = document.getElementById('schDateHeader');
 
-  pToday.classList.remove('active');
-  pTom.classList.remove('active');
-  pAll.classList.remove('active');
+  if(pToday) pToday.classList.remove('active');
+  if(pTom) pTom.classList.remove('active');
+  if(pAll) pAll.classList.remove('active');
 
   var now = new Date();
   if(pill === 'today'){
-    pToday.classList.add('active');
-    head.textContent = formatRuDate(now).toUpperCase();
+    if(pToday) pToday.classList.add('active');
+    if(head) head.textContent = formatRuDate(now).toUpperCase();
   } else if(pill === 'tomorrow'){
-    pTom.classList.add('active');
+    if(pTom) pTom.classList.add('active');
     var tom = new Date(now);
     tom.setDate(tom.getDate() + 1);
-    head.textContent = formatRuDate(tom).toUpperCase();
+    if(head) head.textContent = formatRuDate(tom).toUpperCase();
   } else {
-    pAll.classList.add('active');
-    head.textContent = 'ВСЕ ДНИ НЕДЕЛИ';
+    if(pAll) pAll.classList.add('active');
+    if(head) head.textContent = 'ВСЕ ДНИ НЕДЕЛИ';
   }
+  renderScheduleBoard();
 }
 
 function cycleSchDate(){
   var pToday = document.getElementById('schPillToday');
-  if(pToday.classList.contains('active')) selectSchDate('tomorrow');
+  if(pToday && pToday.classList.contains('active')) selectSchDate('tomorrow');
   else selectSchDate('today');
 }
 
@@ -3095,24 +3286,170 @@ function toggleSchDirectionFilter(){
   } else {
     APP_STATE.schDirection = 'В любую сторону';
   }
-  txt.textContent = APP_STATE.schDirection;
-  filterScheduleList(document.getElementById('schFilterInput').value);
+  if(txt) txt.textContent = APP_STATE.schDirection;
+  renderScheduleBoard();
 }
 
 function filterScheduleList(query){
-  var q = (query || '').toLowerCase().trim();
-  var items = document.querySelectorAll('#schItemsList .sch-item-row');
+  renderScheduleBoard();
+}
+
+function renderScheduleBoard(){
+  var container = document.getElementById('schItemsList');
+  if(!container) return;
+
+  var now = new Date();
+  var currentMins = now.getHours() * 60 + now.getMinutes();
+  var isToday = document.getElementById('schPillToday') && document.getElementById('schPillToday').classList.contains('active');
   var dir = APP_STATE.schDirection;
+  var q = (document.getElementById('schFilterInput') ? document.getElementById('schFilterInput').value : '').toLowerCase().trim();
 
-  items.forEach(function(item){
-    var route = (item.getAttribute('data-route') || '').toLowerCase();
-    var matchQuery = !q || route.indexOf(q) !== -1 || item.innerText.toLowerCase().indexOf(q) !== -1;
-    var matchDir = true;
-    if(dir === 'В сторону Ораниенбаума') matchDir = route.indexOf('ораниенбаум') !== -1 || route.indexOf('калище') !== -1;
-    if(dir === 'В сторону Гатчины') matchDir = route.indexOf('гатчина') !== -1 || route.indexOf('сиверская') !== -1;
+  var items = ALL_BOARD_DEPARTURES.slice();
 
-    item.style.display = (matchQuery && matchDir) ? 'flex' : 'none';
+  if(dir === 'В сторону Ораниенбаума'){
+    items = items.filter(function(it){
+      return it.route.indexOf('Ораниенбаум') !== -1 || it.route.indexOf('Калище') !== -1;
+    });
+  } else if(dir === 'В сторону Гатчины'){
+    items = items.filter(function(it){
+      return it.route.indexOf('Гатчина') !== -1 || it.route.indexOf('Сиверская') !== -1;
+    });
+  }
+
+  if(q){
+    items = items.filter(function(it){
+      return it.route.toLowerCase().indexOf(q) !== -1 || it.id.indexOf(q) !== -1;
+    });
+  }
+
+  if(isToday){
+    // Exclude past trains
+    items = items.filter(function(it){
+      return timeToMinutes(it.time) >= currentMins;
+    });
+  }
+
+  container.innerHTML = '';
+
+  if(items.length === 0){
+    container.innerHTML = '<div style="padding:32px 16px;text-align:center;color:var(--text-muted);font-size:14px;">Поездов не найдено</div>';
+    return;
+  }
+
+  items.forEach(function(it){
+    var row = document.createElement('div');
+    row.className = 'sch-item-row';
+    row.setAttribute('data-route', it.route);
+    row.onclick = function(){
+      openTrainDetails(it.id, it.time, it.arrTime, it.category, it.route);
+    };
+
+    var tagHtml = '';
+    if(it.tag === 'red'){
+      tagHtml = '<div class="sch-badge-tag tag-red-txt">НЕТ ПОСАДКИ</div>';
+    } else if(it.category.indexOf('Ласточка') !== -1){
+      tagHtml = '<div class="sch-badge-tag tag-orange-txt">' + it.category.toUpperCase() + '</div>';
+    }
+
+    var buyBtnHtml = (it.tag !== 'red')
+      ? '<span style="color:var(--accent-yellow);margin-left:auto;" onclick="event.stopPropagation(); quickCreateFromSchedule(\'Балтийский вокзал\', \'' + escapeHtml(it.dest) + '\', \'65\', \'' + (it.category.indexOf('Ласточка') !== -1 ? 'lastochka' : 'standart') + '\');">Купить билет &gt;</span>'
+      : '';
+
+    row.innerHTML =
+      '<div class="sch-time-big">' + it.time + '</div>' +
+      '<div class="sch-desc-col">' +
+        tagHtml +
+        '<div class="sch-route-name">' + escapeHtml(it.route) + '</div>' +
+        '<div class="sch-extra-row">' +
+          '<span class="sch-track-badge">Путь ' + it.track + '</span>' +
+          '<span class="sch-ontime-txt">● По расписанию</span>' +
+          buyBtnHtml +
+        '</div>' +
+      '</div>';
+
+    container.appendChild(row);
   });
+}
+
+/* ──────────────────────────────────────────────────────────
+   PROFILE / ACCOUNT: RANDOM & CUSTOM
+────────────────────────────────────────────────────────── */
+function initProfile(){
+  var savedUser = localStorage.getItem('y_tkt_user');
+  var savedAvatar = localStorage.getItem('y_tkt_avatar');
+
+  if(savedUser && savedAvatar){
+    APP_STATE.username = savedUser;
+    APP_STATE.selectedAvatar = savedAvatar;
+  } else {
+    randomizeProfile(false);
+  }
+  updateProfileDisplay();
+}
+
+function randomizeProfile(save){
+  var rIdx = Math.floor(Math.random() * RANDOM_USERNAMES.length);
+  APP_STATE.username = RANDOM_USERNAMES[rIdx];
+  APP_STATE.selectedAvatar = RANDOM_AVATARS[rIdx % RANDOM_AVATARS.length];
+
+  var input = document.getElementById('profModalInput');
+  if(input) input.value = APP_STATE.username;
+
+  highlightSelectedAvatar(APP_STATE.selectedAvatar);
+  if(save !== false){
+    localStorage.setItem('y_tkt_user', APP_STATE.username);
+    localStorage.setItem('y_tkt_avatar', APP_STATE.selectedAvatar);
+    updateProfileDisplay();
+  }
+}
+
+function updateProfileDisplay(){
+  var uEl = document.getElementById('displayUsername');
+  var aEl = document.getElementById('displayAvatarIcon');
+  if(uEl) uEl.textContent = APP_STATE.username;
+  if(aEl) aEl.textContent = APP_STATE.selectedAvatar;
+}
+
+function openProfileModal(){
+  var m = document.getElementById('profileModal');
+  var inp = document.getElementById('profModalInput');
+  if(inp) inp.value = APP_STATE.username;
+  highlightSelectedAvatar(APP_STATE.selectedAvatar);
+  if(m) m.classList.add('active');
+}
+
+function closeProfileModal(){
+  var m = document.getElementById('profileModal');
+  if(m) m.classList.remove('active');
+}
+
+function pickAvatarEmoji(emoji, btnEl){
+  APP_STATE.selectedAvatar = emoji;
+  var all = document.querySelectorAll('.avatar-opt-btn');
+  all.forEach(function(b){ b.classList.remove('selected'); });
+  if(btnEl) btnEl.classList.add('selected');
+}
+
+function highlightSelectedAvatar(emoji){
+  var all = document.querySelectorAll('.avatar-opt-btn');
+  all.forEach(function(b){
+    if(b.textContent.trim() === emoji){
+      b.classList.add('selected');
+    } else {
+      b.classList.remove('selected');
+    }
+  });
+}
+
+function saveProfileChanges(){
+  var inp = document.getElementById('profModalInput');
+  if(inp && inp.value.trim()){
+    APP_STATE.username = inp.value.trim();
+  }
+  localStorage.setItem('y_tkt_user', APP_STATE.username);
+  localStorage.setItem('y_tkt_avatar', APP_STATE.selectedAvatar);
+  updateProfileDisplay();
+  closeProfileModal();
 }
 
 /* ──────────────────────────────────────────────────────────
