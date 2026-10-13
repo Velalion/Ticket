@@ -14,7 +14,8 @@
 }
 
 :root {
-  --bg-main: #141416;
+  --bg-dark: #0a0a0c;
+  --bg-shell: #141416;
   --bg-card: #1f1f23;
   --bg-item: #25252a;
   --bg-subtle: #2d2d34;
@@ -26,6 +27,7 @@
   --accent-yellow-btn: #fdb813;
   --accent-orange: #ff7020;
   --tag-red: #ff453a;
+  --status-green: #34d399;
   --border-subtle: #2c2c32;
   --tab-inactive: #888890;
   --radius-lg: 16px;
@@ -34,27 +36,43 @@
 }
 
 body {
-  background: #000000;
+  background: var(--bg-dark);
   color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   overflow-x: hidden;
 }
 
-/* App Container (iPhone layout centered on desktop, full on mobile) */
+/* App Shell container (Mobile phone frame on PC, full screen on mobile) */
 #app-shell {
   width: 100%;
-  max-width: 440px;
-  min-height: 100vh;
-  background: var(--bg-main);
-  position: relative;
+  max-width: 430px;
+  height: 92vh;
+  max-height: 900px;
+  background: var(--bg-shell);
+  border-radius: 36px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.85), 0 0 0 1px #28282e;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 40px rgba(0,0,0,0.8);
-  overflow-x: hidden;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  body {
+    align-items: flex-start;
+  }
+  #app-shell {
+    max-width: 100%;
+    height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
 }
 
 /* iOS Status Bar */
@@ -67,7 +85,10 @@ body {
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
-  z-index: 100;
+  flex-shrink: 0;
+  z-index: 50;
+  background: var(--bg-shell);
+  user-select: none;
 }
 .status-bar .status-icons {
   display: flex;
@@ -75,29 +96,27 @@ body {
   gap: 6px;
 }
 
-/* Views wrapper */
+/* Scrollable Content Area */
 .content-area {
   flex: 1;
-  padding-bottom: 84px; /* space for tab bar */
   overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* Screen views */
 .screen-view {
   display: none;
   width: 100%;
-  animation: fadeIn 0.2s ease;
+  padding-bottom: 24px;
 }
 .screen-view.active {
   display: block;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(3px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* ──────────────────────────────────────────────────────────
-   TAB 1: ПОИСК / МАРШРУТЫ
+   TAB 1: ПОИСК И МАРШРУТЫ
 ────────────────────────────────────────────────────────── */
 .search-header-pills {
   display: flex;
@@ -144,7 +163,7 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 .route-row-icon {
-  width: 22px;
+  width: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -158,6 +177,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-right: 60px;
 }
 .route-row-text.placeholder {
   color: var(--text-muted);
@@ -244,7 +264,7 @@ body {
   background: var(--border-subtle);
 }
 .train-card-item {
-  background: var(--bg-main);
+  background: var(--bg-shell);
   padding: 14px 16px;
   cursor: pointer;
   position: relative;
@@ -289,7 +309,7 @@ body {
 }
 .train-price-right {
   font-size: 17px;
-  font-weight: 500;
+  font-weight: 600;
   color: #fff;
 }
 .train-type-title {
@@ -301,7 +321,7 @@ body {
 .train-route-title {
   font-size: 14px;
   color: #dedee3;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 /* Empty tracks illustration */
@@ -310,14 +330,14 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
+  padding: 30px 24px;
   text-align: center;
 }
 .empty-rail-circle {
-  width: 148px;
-  height: 148px;
+  width: 144px;
+  height: 144px;
   border-radius: 50%;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   overflow: hidden;
 }
 .empty-rail-text {
@@ -366,12 +386,12 @@ body {
 ────────────────────────────────────────────────────────── */
 .station-modal {
   display: none;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.75);
   z-index: 1000;
   justify-content: center;
   align-items: flex-end;
@@ -381,8 +401,7 @@ body {
 }
 .station-modal-content {
   width: 100%;
-  max-width: 440px;
-  height: 92vh;
+  height: 94%;
   background: #1c1c1e;
   border-radius: 20px 20px 0 0;
   display: flex;
@@ -409,7 +428,6 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
-
 .station-input-wrap {
   padding: 12px 20px;
   position: relative;
@@ -427,11 +445,10 @@ body {
 .station-search-input::placeholder {
   color: #636366;
 }
-
 .station-history-list {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 0;
+  padding: 6px 0;
 }
 .station-history-item {
   display: flex;
@@ -477,8 +494,7 @@ body {
 .train-details-view {
   display: none;
   width: 100%;
-  background: var(--bg-main);
-  padding-bottom: 84px;
+  background: var(--bg-shell);
 }
 .train-details-view.active {
   display: block;
@@ -494,9 +510,9 @@ body {
   background: none;
   border: none;
   color: #fff;
-  font-size: 22px;
+  font-size: 24px;
   cursor: pointer;
-  padding: 4px;
+  padding: 2px 8px;
 }
 .train-det-title {
   font-size: 17px;
@@ -522,7 +538,6 @@ body {
   color: var(--text-sub);
   line-height: 1.4;
 }
-
 .ad-card-blue {
   margin: 10px 16px 14px;
   background: #3730a3;
@@ -542,11 +557,10 @@ body {
   font-size: 12px;
   color: #c7d2fe;
 }
-
 .train-tariffs-btn {
   margin: 0 16px 16px;
   width: calc(100% - 32px);
-  padding: 12px;
+  padding: 13px;
   background: transparent;
   border: 1.5px solid var(--accent-yellow);
   color: #fff;
@@ -618,7 +632,6 @@ body {
   padding: 6px 0;
   cursor: pointer;
 }
-
 .btn-report-err {
   margin: 16px;
   width: calc(100% - 32px);
@@ -665,7 +678,7 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────────
-   TAB 3: БИЛЕТЫ (Вкладка по центру)
+   TAB 3: БИЛЕТЫ (ВКЛАДКА ПО ЦЕНТРУ)
 ────────────────────────────────────────────────────────── */
 .tickets-tab-header {
   padding: 14px 20px 8px;
@@ -677,7 +690,6 @@ body {
   font-size: 20px;
   font-weight: 700;
 }
-
 .tickets-subnav-pills {
   display: flex;
   margin: 6px 16px 16px;
@@ -738,7 +750,6 @@ body {
 .tkt-form-field select:focus, .tkt-form-field input:focus {
   border-color: var(--accent-orange);
 }
-
 .tkt-swap-row {
   display: flex;
   align-items: flex-end;
@@ -758,7 +769,6 @@ body {
   cursor: pointer;
   flex-shrink: 0;
 }
-
 .tkt-price-row {
   display: flex;
   gap: 10px;
@@ -775,7 +785,6 @@ body {
   cursor: pointer;
   white-space: nowrap;
 }
-
 .btn-generate-main {
   width: 100%;
   padding: 15px;
@@ -787,13 +796,9 @@ body {
   font-weight: 700;
   cursor: pointer;
   margin-top: 6px;
-  transition: opacity 0.2s;
-}
-.btn-generate-main:active {
-  opacity: 0.85;
 }
 
-/* User tickets list */
+/* User Tickets Cards */
 .user-tickets-list {
   padding: 0 16px;
   display: flex;
@@ -817,6 +822,7 @@ body {
   font-weight: 600;
   color: #fff;
   margin-bottom: 6px;
+  padding-right: 28px;
 }
 .user-ticket-card .tkt-card-meta {
   font-size: 13px;
@@ -827,7 +833,7 @@ body {
   display: inline-block;
   font-size: 12px;
   font-weight: 600;
-  color: #34d399;
+  color: var(--status-green);
   background: rgba(52,211,153,0.1);
   padding: 3px 8px;
   border-radius: 6px;
@@ -846,8 +852,6 @@ body {
 .user-ticket-card .tkt-card-del:hover {
   color: #ef4444;
 }
-
-/* Authentic Aeroexpress Quick Buttons */
 .aero-quick-btn {
   width: 100%;
   padding: 14px;
@@ -862,17 +866,17 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────────
-   MODAL / VIEW: ВНЕШНИЙ ВИД БИЛЕТА (ТОЧНО КАК В ticket.html)
+   MODAL: ПРОСМОТР БИЛЕТА (ТОЧНЫЙ ВИД ИЗ ticket.html)
 ────────────────────────────────────────────────────────── */
 #ticket-view-modal {
   display: none;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #fff;
-  color: #000;
+  background: #ffffff;
+  color: #000000;
   z-index: 2000;
   overflow-y: auto;
   flex-direction: column;
@@ -880,23 +884,18 @@ body {
 #ticket-view-modal.active {
   display: flex;
 }
-
 .tkt-view-container {
   width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100vh;
+  min-height: 100%;
   background: #fff;
   display: flex;
   flex-direction: column;
 }
-
-/* Header */
 .tkt-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 50px 16px 14px;
+  padding: 48px 16px 14px;
   position: relative;
   border-bottom: 1px solid #f0f0f0;
 }
@@ -914,8 +913,6 @@ body {
   font-weight: 400;
   color: #000;
 }
-
-/* Body */
 .tkt-body {
   padding: 22px 20px 20px;
   flex: 1;
@@ -956,8 +953,6 @@ body {
   font-weight: 400;
   color: #999;
 }
-
-/* Barcode */
 .barcode-wrap {
   margin: 18px 0 20px 0;
   cursor: pointer;
@@ -987,10 +982,8 @@ body {
   margin-top: 4px;
   line-height: 1.45;
 }
-
-/* Footer */
 .tkt-footer {
-  padding: 16px 20px 40px;
+  padding: 16px 20px 32px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -1033,12 +1026,29 @@ body {
   cursor: pointer;
 }
 .sch-sub-dir {
-  padding: 0 16px 12px;
+  padding: 0 16px 10px;
   font-size: 14px;
-  color: var(--text-muted);
+  color: var(--accent-yellow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sch-search-bar {
+  margin: 0 16px 12px;
+}
+.sch-search-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid #2e2e34;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
 }
 .sch-date-label {
-  padding: 8px 16px;
+  padding: 4px 16px 8px;
   font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
@@ -1087,21 +1097,33 @@ body {
   color: #dedee3;
   line-height: 1.35;
 }
+.sch-extra-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.sch-track-badge {
+  background: #2b2b32;
+  color: #e2e8f0;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.sch-ontime-txt {
+  color: var(--status-green);
+}
 
 /* ──────────────────────────────────────────────────────────
-   TAB 5: НАСТРОЙКИ (Профиль и тумблеры)
+   TAB 5: НАСТРОЙКИ
 ────────────────────────────────────────────────────────── */
-.settings-view-wrap {
-  padding: 0 0 20px;
-}
 .settings-header-title {
   padding: 14px 16px 12px;
   font-size: 18px;
   font-weight: 600;
   text-align: center;
 }
-
-/* Profile card */
 .profile-card-item {
   display: flex;
   justify-content: space-between;
@@ -1137,8 +1159,6 @@ body {
   font-size: 20px;
   border: 1.5px solid #4b5563;
 }
-
-/* Settings items list */
 .settings-list {
   display: flex;
   flex-direction: column;
@@ -1183,8 +1203,6 @@ body {
   color: #fff;
   cursor: pointer;
 }
-
-/* iOS Toggle switch */
 .ios-toggle {
   position: relative;
   display: inline-block;
@@ -1223,13 +1241,13 @@ body {
   transform: translateX(20px);
 }
 
-/* Profile Edit Modal */
+/* Profile Modal */
 .profile-modal {
   display: none;
-  position: fixed;
+  position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.8);
   z-index: 1500;
   justify-content: center;
   align-items: center;
@@ -1306,20 +1324,16 @@ body {
    BOTTOM TAB BAR (5 Вкладок)
 ────────────────────────────────────────────────────────── */
 .bottom-tab-bar {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 440px;
-  height: 68px;
+  height: 64px;
   background: #1a1a1e;
   border-top: 1px solid #28282e;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 500;
-  padding-bottom: 6px;
+  flex-shrink: 0;
+  z-index: 50;
+  padding-bottom: 4px;
+  user-select: none;
 }
 .tab-item-btn {
   flex: 1;
@@ -1327,7 +1341,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   background: none;
   border: none;
   color: var(--tab-inactive);
@@ -1345,17 +1359,6 @@ body {
 .tab-item-btn .tab-label {
   font-size: 10px;
   font-weight: 500;
-}
-.tab-badge-count {
-  position: absolute;
-  top: 4px;
-  right: calc(50% - 16px);
-  background: var(--accent-orange);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  border-radius: 10px;
-  padding: 1px 5px;
 }
 </style>
 </head>
@@ -1386,14 +1389,13 @@ body {
     </div>
   </div>
 
-  <!-- Content Area containing screens -->
+  <!-- Scrollable Content Area -->
   <div class="content-area">
 
     <!-- ══════════════════════════════════════════════════════
          SCREEN 1: МАРШРУТЫ / ПОИСК
     ══════════════════════════════════════════════════════ -->
     <div id="screen-routes" class="screen-view active">
-      <!-- Switcher: Электрички / Ж/д билеты -->
       <div class="search-header-pills">
         <button class="search-pill-btn active" id="pillElek" onclick="switchRouteSubTab('elek')">Электрички</button>
         <button class="search-pill-btn" id="pillTrain" onclick="switchRouteSubTab('train')">Ж/д билеты</button>
@@ -1401,7 +1403,6 @@ body {
 
       <!-- Mode A: Электрички -->
       <div id="mode-elek-container">
-        <!-- Route Card -->
         <div class="route-card">
           <div class="route-row-item" onclick="openStationModal('from')">
             <div class="route-row-icon">
@@ -1532,7 +1533,7 @@ body {
         </div>
 
         <!-- Ad Banner -->
-        <div class="ad-banner-kred" onclick="alert('Кредистория: Сервис проверки кредитного рейтинга');">
+        <div class="ad-banner-kred" onclick="alert('Кредистория: Сервис бесплатной проверки кредитного рейтинга');">
           <div class="ad-left">
             <span class="ad-logo-icon">C</span>
             <span>кредистория</span>
@@ -1541,7 +1542,7 @@ body {
         </div>
       </div>
 
-      <!-- Mode B: Ж/д билеты (screenshot 20:19) -->
+      <!-- Mode B: Ж/д билеты -->
       <div id="mode-train-container" style="display:none;">
         <div class="route-card">
           <div class="route-row-item" onclick="openStationModal('from')">
@@ -1564,7 +1565,7 @@ body {
 
         <div class="empty-rail-state">
           <div class="empty-rail-circle">
-            <svg width="148" height="148" viewBox="0 0 148 148">
+            <svg width="144" height="144" viewBox="0 0 148 148">
               <circle cx="74" cy="74" r="74" fill="#a4d2f5"/>
               <rect x="0" y="85" width="148" height="63" fill="#877567"/>
               <circle cx="74" cy="75" r="30" fill="#fbd34d"/>
@@ -1590,9 +1591,9 @@ body {
         <span class="fav-edit-btn" onclick="clearFavorites();">Изменить</span>
       </div>
 
-      <div id="favEmptyContainer" class="empty-rail-state" style="padding-top:60px;">
+      <div id="favEmptyContainer" class="empty-rail-state" style="padding-top:40px;">
         <div class="empty-rail-circle">
-          <svg width="148" height="148" viewBox="0 0 148 148">
+          <svg width="144" height="144" viewBox="0 0 148 148">
             <circle cx="74" cy="74" r="74" fill="#c2410c"/>
             <rect x="0" y="85" width="148" height="63" fill="#78716c"/>
             <circle cx="74" cy="85" r="26" fill="#fde047"/>
@@ -1613,7 +1614,7 @@ body {
 
 
     <!-- ══════════════════════════════════════════════════════
-         SCREEN 3: БИЛЕТЫ (ВКЛАДКА ПОСЕРЕДИНЕ - ГЕНЕРАТОР И СПИСОК)
+         SCREEN 3: БИЛЕТЫ (ВКЛАДКА ПО ЦЕНТРУ - ГЕНЕРАТОР И СПИСОК)
     ══════════════════════════════════════════════════════ -->
     <div id="screen-tickets" class="screen-view">
       <div class="tickets-tab-header">
@@ -1626,11 +1627,11 @@ body {
         <button class="tkt-subnav-btn" id="btnSubCreateTicket" onclick="switchTicketSubTab('create')">Создать билет</button>
       </div>
 
-      <!-- View 3.A: Список созданных билетов -->
+      <!-- View 3.A: Мои билеты -->
       <div id="subview-my-tickets">
-        <!-- If empty -->
-        <div id="tktEmptyBox" style="padding: 20px 16px;">
-          <div style="text-align:center;margin-bottom:24px;">
+        <!-- Empty state -->
+        <div id="tktEmptyBox" style="padding: 10px 16px;">
+          <div style="text-align:center;margin-bottom:20px;">
             <div style="font-size:18px;font-weight:600;margin-bottom:6px;">Вы ещё не покупали билеты</div>
             <div style="font-size:14px;color:#9ca3af;line-height:1.4;">
               Создайте билет в конструкторе или выберите направление аэроэкспресса
@@ -1641,16 +1642,16 @@ body {
           <button class="aero-quick-btn" onclick="quickCreateAero('Москва — Домодедово', '500')">Москва — Домодедово</button>
           <button class="aero-quick-btn" onclick="quickCreateAero('Москва — Внуково', '500')">Москва — Внуково</button>
 
-          <button class="btn-generate-main" style="margin-top:16px;" onclick="switchTicketSubTab('create')">
+          <button class="btn-generate-main" style="margin-top:10px;" onclick="switchTicketSubTab('create')">
             + Создать билет на пригородный поезд
           </button>
         </div>
 
-        <!-- If has tickets -->
+        <!-- Tickets list -->
         <div id="tktListBox" class="user-tickets-list" style="display:none;"></div>
       </div>
 
-      <!-- View 3.B: Создать билет (Форма генерации) -->
+      <!-- View 3.B: Создать билет -->
       <div id="subview-create-ticket" style="display:none;">
         <div class="ticket-form-card">
           <!-- From -->
@@ -1708,7 +1709,6 @@ body {
             </div>
           </div>
 
-          <!-- Generate Action -->
           <button class="btn-generate-main" onclick="onGenerateTicketSubmit()">Создать билет</button>
         </div>
       </div>
@@ -1721,13 +1721,24 @@ body {
     <div id="screen-schedule" class="screen-view">
       <div class="schedule-header">
         <span class="sch-st-title">Санкт-Петербург (Балтийский вокзал)</span>
-        <span class="sch-info-icon" onclick="alert('Справочная вокзала: расписание пригородных поездов');">i</span>
+        <span class="sch-info-icon" onclick="alert('Справочная служба: вокзал работает круглосуточно. Табло пригородных поездов обновляется в режиме онлайн.');">i</span>
       </div>
-      <div class="sch-sub-dir">В любую сторону</div>
+
+      <div class="sch-sub-dir" onclick="toggleSchDirectionFilter()">
+        <span id="schDirTxt">В любую сторону</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+
+      <!-- Quick Search inside Schedule -->
+      <div class="sch-search-bar">
+        <input type="text" id="schFilterInput" class="sch-search-input" placeholder="🔍 Поиск по номеру поезда или станции..." oninput="filterScheduleList(this.value)">
+      </div>
 
       <!-- Date selector -->
       <div class="date-selector-row" style="margin-bottom:6px;">
-        <button class="cal-icon-pill">
+        <button class="cal-icon-pill" onclick="cycleSchDate()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="4" width="18" height="18" rx="2"/>
             <line x1="16" y1="2" x2="16" y2="6"/>
@@ -1742,64 +1753,95 @@ body {
 
       <div class="sch-date-label" id="schDateHeader">14 ОКТЯБРЯ</div>
 
-      <!-- Departures List (matching screenshot 20:21) -->
-      <div class="sch-list-wrap">
+      <!-- Departures List -->
+      <div class="sch-list-wrap" id="schItemsList">
         <!-- 00:12 -->
-        <div class="sch-item-row" onclick="openTrainDetails('6302', '00:12', '00:54', 'Стандарт')">
+        <div class="sch-item-row" data-route="Красное Село — Санкт-Петербург (Балтийский вокзал)" onclick="openTrainDetails('6302', '00:12', '00:54', 'Стандарт')">
           <div class="sch-time-big">00:12</div>
           <div class="sch-desc-col">
             <div class="sch-badge-tag tag-red-txt">НЕТ ПОСАДКИ</div>
             <div class="sch-route-name">Красное Село — Санкт-Петербург (Балтийский вокзал)</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 2</span>
+              <span class="sch-ontime-txt">● Прибыл</span>
+            </div>
           </div>
         </div>
         <!-- 05:40 -->
-        <div class="sch-item-row" onclick="openTrainDetails('7101', '05:40', '06:28', '«Ласточка/Финист»')">
+        <div class="sch-item-row" data-route="Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1" onclick="openTrainDetails('7101', '05:40', '06:28', '«Ласточка/Финист»')">
           <div class="sch-time-big">05:40</div>
           <div class="sch-desc-col">
             <div class="sch-badge-tag tag-orange-txt">«ЛАСТОЧКА/ФИНИСТ»</div>
             <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 4</span>
+              <span class="sch-ontime-txt">● По расписанию</span>
+              <span style="color:var(--accent-yellow);margin-left:auto;" onclick="event.stopPropagation(); quickCreateFromSchedule('Балтийский вокзал', 'Ораниенбаум-1', '65', 'lastochka');">Купить билет &gt;</span>
+            </div>
           </div>
         </div>
         <!-- 05:55 -->
-        <div class="sch-item-row" onclick="openTrainDetails('6311', '05:55', '06:58', 'Стандарт')">
+        <div class="sch-item-row" data-route="Санкт-Петербург (Балтийский вокзал) — Гатчина-Варшавская" onclick="openTrainDetails('6311', '05:55', '06:58', 'Стандарт')">
           <div class="sch-time-big">05:55</div>
           <div class="sch-desc-col">
             <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Гатчина-Варшавская</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 1</span>
+              <span class="sch-ontime-txt">● По расписанию</span>
+              <span style="color:var(--accent-yellow);margin-left:auto;" onclick="event.stopPropagation(); quickCreateFromSchedule('Балтийский вокзал', 'Гатчина-Варшавская', '65', 'standart');">Купить билет &gt;</span>
+            </div>
           </div>
         </div>
         <!-- 06:05 -->
-        <div class="sch-item-row" onclick="openTrainDetails('6313', '06:05', '07:35', 'Стандарт')">
+        <div class="sch-item-row" data-route="Санкт-Петербург (Балтийский вокзал) — Сиверская" onclick="openTrainDetails('6313', '06:05', '07:35', 'Стандарт')">
           <div class="sch-time-big">06:05</div>
           <div class="sch-desc-col">
             <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Сиверская</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 3</span>
+              <span class="sch-ontime-txt">● По расписанию</span>
+            </div>
           </div>
         </div>
         <!-- 06:10 -->
-        <div class="sch-item-row" onclick="openTrainDetails('7103', '06:10', '07:44', '«Ласточка»')">
+        <div class="sch-item-row" data-route="Санкт-Петербург (Балтийский вокзал) — Калище" onclick="openTrainDetails('7103', '06:10', '07:44', '«Ласточка»')">
           <div class="sch-time-big">06:10</div>
           <div class="sch-desc-col">
             <div class="sch-badge-tag tag-orange-txt">«ЛАСТОЧКА»</div>
             <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Калище</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 5</span>
+              <span class="sch-ontime-txt">● По расписанию</span>
+              <span style="color:var(--accent-yellow);margin-left:auto;" onclick="event.stopPropagation(); quickCreateFromSchedule('Балтийский вокзал', 'Калище', '65', 'lastochka');">Купить билет &gt;</span>
+            </div>
           </div>
         </div>
         <!-- 06:10 arrival -->
-        <div class="sch-item-row" onclick="openTrainDetails('6314', '06:10', '07:15', 'Стандарт')">
+        <div class="sch-item-row" data-route="Гатчина-Балтийская — Санкт-Петербург (Балтийский вокзал)" onclick="openTrainDetails('6314', '06:10', '07:15', 'Стандарт')">
           <div class="sch-time-big">06:10</div>
           <div class="sch-desc-col">
             <div class="sch-badge-tag tag-red-txt">НЕТ ПОСАДКИ</div>
             <div class="sch-route-name">Гатчина-Балтийская — Санкт-Петербург (Балтийский вокзал)</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 2</span>
+            </div>
           </div>
         </div>
         <!-- 06:20 -->
-        <div class="sch-item-row" onclick="openTrainDetails('7105', '06:20', '07:08', '«Ласточка»')">
+        <div class="sch-item-row" data-route="Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1" onclick="openTrainDetails('7105', '06:20', '07:08', '«Ласточка»')">
           <div class="sch-time-big">06:20</div>
           <div class="sch-desc-col">
             <div class="sch-badge-tag tag-orange-txt">«ЛАСТОЧКА»</div>
             <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 4</span>
+              <span class="sch-ontime-txt">● По расписанию</span>
+              <span style="color:var(--accent-yellow);margin-left:auto;" onclick="event.stopPropagation(); quickCreateFromSchedule('Балтийский вокзал', 'Ораниенбаум-1', '65', 'lastochka');">Купить билет &gt;</span>
+            </div>
           </div>
         </div>
         <!-- 06:25 -->
-        <div class="sch-item-row" onclick="openTrainDetails('7107', '06:25', '08:02', '«Ласточка/Финист»')">
+        <div class="sch-item-row" data-route="Калище — Санкт-Петербург (Балтийский вокзал)" onclick="openTrainDetails('7107', '06:25', '08:02', '«Ласточка/Финист»')">
           <div class="sch-time-big">06:25</div>
           <div class="sch-desc-col">
             <div class="sch-badge-tag tag-red-txt">НЕТ ПОСАДКИ</div>
@@ -1808,10 +1850,14 @@ body {
           </div>
         </div>
         <!-- 06:25 -->
-        <div class="sch-item-row" onclick="openTrainDetails('6317', '06:25', '07:32', 'Стандарт')">
+        <div class="sch-item-row" data-route="Санкт-Петербург (Балтийский вокзал) — Гатчина-Балтийская" onclick="openTrainDetails('6317', '06:25', '07:32', 'Стандарт')">
           <div class="sch-time-big">06:25</div>
           <div class="sch-desc-col">
             <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Гатчина-Балтийская</div>
+            <div class="sch-extra-row">
+              <span class="sch-track-badge">Путь 1</span>
+              <span class="sch-ontime-txt">● По расписанию</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1840,7 +1886,7 @@ body {
             <span class="setting-main-label">Пригородная зона</span>
             <span class="setting-sub-desc">Область, в которую входит ваш город</span>
           </div>
-          <span class="setting-val-arrow" onclick="alert('Выбор пригородной зоны: Санкт-Петербургская');">Санкт-Петербургская &gt;</span>
+          <span class="setting-val-arrow" onclick="alert('Пригородная зона: Санкт-Петербургская');">Санкт-Петербургская &gt;</span>
         </div>
 
         <div class="setting-row">
@@ -1855,7 +1901,7 @@ body {
             <span class="setting-main-label">Карта «Тройка»</span>
             <span class="setting-sub-desc">Теперь в приложении</span>
           </div>
-          <button class="btn-bind-troika" onclick="alert('Привязка карты Тройка');">Привязать</button>
+          <button class="btn-bind-troika" onclick="alert('Привязка карты «Тройка»');">Привязать</button>
         </div>
 
         <div class="setting-row">
@@ -1863,7 +1909,7 @@ body {
             <span class="setting-main-label">Показывать остановки</span>
           </div>
           <label class="ios-toggle">
-            <input type="checkbox" id="toggleStops">
+            <input type="checkbox" id="toggleStops" onchange="saveTogglePref('stops', this.checked)">
             <span class="slider"></span>
           </label>
         </div>
@@ -1872,7 +1918,7 @@ body {
           <div class="setting-title-col">
             <span class="setting-main-label">Оформление</span>
           </div>
-          <span class="setting-val-arrow" onclick="alert('Оформление: Системное (Тёмная тема)');">Системное &gt;</span>
+          <span class="setting-val-arrow" onclick="alert('Тема оформления: Тёмная (Системное)');">Системное &gt;</span>
         </div>
 
         <div class="setting-row">
@@ -1880,7 +1926,7 @@ body {
             <span class="setting-main-label">Показывать номер поезда</span>
           </div>
           <label class="ios-toggle">
-            <input type="checkbox" id="toggleTrainNum">
+            <input type="checkbox" id="toggleTrainNum" onchange="saveTogglePref('num', this.checked)">
             <span class="slider"></span>
           </label>
         </div>
@@ -1891,7 +1937,7 @@ body {
             <span class="setting-sub-desc">Уведомления о важных изменениях в движении электричек из избранного</span>
           </div>
           <label class="ios-toggle">
-            <input type="checkbox" id="toggleNotif">
+            <input type="checkbox" id="toggleNotif" onchange="saveTogglePref('notif', this.checked)">
             <span class="slider"></span>
           </label>
         </div>
@@ -1915,7 +1961,7 @@ body {
             <span class="setting-main-label">Пересадки</span>
             <span class="setting-sub-desc">Строить маршруты с пересадками</span>
           </div>
-          <span class="setting-val-arrow" onclick="alert('Пересадки: Автоматически');">Автоматически &gt;</span>
+          <span class="setting-val-arrow" onclick="alert('Поиск пересадок: Автоматически');">Автоматически &gt;</span>
         </div>
 
         <div class="setting-row">
@@ -1923,12 +1969,12 @@ body {
             <span class="setting-main-label">Предложить каршеринг</span>
           </div>
           <label class="ios-toggle">
-            <input type="checkbox" id="toggleCarshare">
+            <input type="checkbox" id="toggleCarshare" onchange="saveTogglePref('carshare', this.checked)">
             <span class="slider"></span>
           </label>
         </div>
 
-        <div class="setting-row" style="cursor:pointer;" onclick="alert('Будильники: функция в разработке');">
+        <div class="setting-row" style="cursor:pointer;" onclick="alert('Будильники: функция синхронизирована');">
           <span class="setting-main-label">Будильники</span>
           <span style="color:#666;">&gt;</span>
         </div>
@@ -1938,7 +1984,7 @@ body {
           <span style="color:#666;">&gt;</span>
         </div>
 
-        <div class="setting-row" style="cursor:pointer;" onclick="alert('О приложении: Яндекс Электрички v4.28');">
+        <div class="setting-row" style="cursor:pointer;" onclick="alert('Яндекс Электрички v4.28');">
           <span class="setting-main-label">О приложении</span>
           <span style="color:#666;">&gt;</span>
         </div>
@@ -1979,7 +2025,6 @@ body {
 
       <!-- Stops timeline -->
       <div class="timeline-wrap" id="timelineList">
-        <!-- 20:40 -->
         <div class="timeline-row">
           <div class="timeline-time-col">20:40</div>
           <div class="timeline-line-col">
@@ -1992,7 +2037,6 @@ body {
             <div class="timeline-st-sub" style="color:#6b7280;text-decoration:line-through;">Электродепо</div>
           </div>
         </div>
-        <!-- 20:48 -->
         <div class="timeline-row">
           <div class="timeline-time-col">20:48</div>
           <div class="timeline-line-col">
@@ -2003,7 +2047,6 @@ body {
             <div class="timeline-st-name">Броневая</div>
           </div>
         </div>
-        <!-- 20:52 -->
         <div class="timeline-row">
           <div class="timeline-time-col">20:52</div>
           <div class="timeline-line-col">
@@ -2014,7 +2057,6 @@ body {
             <div class="timeline-st-name">Ленинский Проспект</div>
           </div>
         </div>
-        <!-- 20:55 -->
         <div class="timeline-row">
           <div class="timeline-time-col">20:55</div>
           <div class="timeline-line-col">
@@ -2025,7 +2067,6 @@ body {
             <div class="timeline-st-name">Дачное</div>
           </div>
         </div>
-        <!-- 20:59 -->
         <div class="timeline-row">
           <div class="timeline-time-col">20:59</div>
           <div class="timeline-line-col">
@@ -2036,7 +2077,6 @@ body {
             <div class="timeline-st-name">Ульянка</div>
           </div>
         </div>
-        <!-- 21:02 -->
         <div class="timeline-row">
           <div class="timeline-time-col">21:02</div>
           <div class="timeline-line-col">
@@ -2047,7 +2087,6 @@ body {
             <div class="timeline-st-name">Лигово</div>
           </div>
         </div>
-        <!-- 21:05 -->
         <div class="timeline-row">
           <div class="timeline-time-col">21:05</div>
           <div class="timeline-line-col">
@@ -2058,7 +2097,6 @@ body {
             <div class="timeline-st-name">Сосновая Поляна</div>
           </div>
         </div>
-        <!-- 21:07 - 21:08 -->
         <div class="timeline-row">
           <div class="timeline-time-col">21:07 — 21:08</div>
           <div class="timeline-line-col">
@@ -2070,7 +2108,7 @@ body {
             <div class="timeline-st-sub">☁️ +5° как +3°</div>
           </div>
         </div>
-        <!-- Expandable middle stops -->
+        <!-- Middle stops -->
         <div id="hiddenStopsBlock" style="display:none;">
           <div class="timeline-row">
             <div class="timeline-time-col">21:14</div>
@@ -2118,7 +2156,7 @@ body {
         </div>
       </div>
 
-      <button class="btn-report-err" onclick="alert('Спасибо! Сообщение отправлено в службу поддержки.');">Сообщить об ошибке</button>
+      <button class="btn-report-err" onclick="alert('Спасибо! Сообщение отправлено.');">Сообщить об ошибке</button>
     </div>
 
   </div> <!-- /content-area -->
@@ -2128,7 +2166,6 @@ body {
        BOTTOM NAVIGATION BAR (5 Вкладок)
   ══════════════════════════════════════════════════════ -->
   <nav class="bottom-tab-bar">
-    <!-- 1: Маршруты -->
     <button class="tab-item-btn active" id="tabBtnRoutes" onclick="switchMainTab('routes')">
       <svg viewBox="0 0 24 24">
         <path d="M19 15l-4-4v3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h1V2H7a5 5 0 0 0-5 5v4a5 5 0 0 0 5 5h8v3l4-4zM5 9l4 4V10h8a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3h-1v2h1a5 5 0 0 0 5-5v-4a5 5 0 0 0-5-5H9V5L5 9z"/>
@@ -2136,7 +2173,6 @@ body {
       <span class="tab-label">Маршруты</span>
     </button>
 
-    <!-- 2: Избранное -->
     <button class="tab-item-btn" id="tabBtnFavorites" onclick="switchMainTab('favorites')">
       <svg viewBox="0 0 24 24">
         <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
@@ -2144,15 +2180,14 @@ body {
       <span class="tab-label">Избранное</span>
     </button>
 
-    <!-- 3: Билеты (Центр) -->
-    <button class="tab-item-btn" id="tabBtnTickets" style="position:relative;" onclick="switchMainTab('tickets')">
+    <!-- 3: Билеты (Посередине) -->
+    <button class="tab-item-btn" id="tabBtnTickets" onclick="switchMainTab('tickets')">
       <svg viewBox="0 0 24 24">
         <path d="M20 4H4c-1.1 0-2 .9-2 2v3c1.1 0 2 .9 2 2s-.9 2-2 2v3c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-3c-1.1 0-2-.9-2-2s.9-2 2-2V6c0-1.1-.9-2-2-2zm-5 12H9v-2h6v2zm0-4H9v-2h6v2zm0-4H9V6h6v2z"/>
       </svg>
       <span class="tab-label">Билеты</span>
     </button>
 
-    <!-- 4: Расписание -->
     <button class="tab-item-btn" id="tabBtnSchedule" onclick="switchMainTab('schedule')">
       <svg viewBox="0 0 24 24">
         <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h2v4.8l4.2 2.5-.8 1.9z"/>
@@ -2160,7 +2195,6 @@ body {
       <span class="tab-label">Расписание</span>
     </button>
 
-    <!-- 5: Настройки -->
     <button class="tab-item-btn" id="tabBtnSettings" onclick="switchMainTab('settings')">
       <svg viewBox="0 0 24 24">
         <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
@@ -2183,50 +2217,12 @@ body {
         <input type="text" id="stationModalSearchInput" class="station-search-input" placeholder="Станция или город" autocomplete="off" oninput="filterStationsList(this.value)">
       </div>
 
-      <div class="station-history-list" id="stationHistoryList">
-        <!-- Preset items -->
-        <div class="station-history-item" onclick="selectStationItem('Балтийский вокзал')">
-          <div class="st-clock-icon">🕒</div>
-          <div class="st-text-col">
-            <span class="st-name-main">Балтийский вокзал</span>
-            <span class="st-name-sub">Санкт-Петербург</span>
-          </div>
-        </div>
-        <div class="station-history-item" onclick="selectStationItem('Сергиево (Володарская)')">
-          <div class="st-clock-icon">🕒</div>
-          <div class="st-text-col">
-            <span class="st-name-main">Сергиево (Володарская)</span>
-            <span class="st-name-sub">Сергиево · Санкт-Петербург и Ленинградская область</span>
-          </div>
-        </div>
-        <div class="station-history-item" onclick="selectStationItem('Ленинский проспект')">
-          <div class="st-clock-icon">🕒</div>
-          <div class="st-text-col">
-            <span class="st-name-main">Ленинский проспект</span>
-            <span class="st-name-sub">Санкт-Петербург</span>
-          </div>
-        </div>
-        <div class="station-history-item" onclick="selectStationItem('Ораниенбаум-1')">
-          <div class="st-clock-icon">🕒</div>
-          <div class="st-text-col">
-            <span class="st-name-main">Ораниенбаум-1</span>
-            <span class="st-name-sub">Ломоносов · Санкт-Петербург</span>
-          </div>
-        </div>
-        <div class="station-history-item" onclick="selectStationItem('Ораниенбаум-2')">
-          <div class="st-clock-icon">🕒</div>
-          <div class="st-text-col">
-            <span class="st-name-main">Ораниенбаум-2</span>
-            <span class="st-name-sub">Ломоносов · Санкт-Петербург</span>
-          </div>
-        </div>
-      </div>
+      <div class="station-history-list" id="stationHistoryList"></div>
     </div>
   </div>
 
-
   <!-- ══════════════════════════════════════════════════════
-       MODAL: ПРОФИЛЬ / СМЕНА АККАУНТА
+       MODAL: НАСТРОЙКИ ПРОФИЛЯ
   ══════════════════════════════════════════════════════ -->
   <div id="profileModal" class="profile-modal">
     <div class="profile-modal-box">
@@ -2238,7 +2234,6 @@ body {
       <div>
         <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">Выберите аватарку</label>
         <div class="avatar-grid" id="avatarGrid">
-          <!-- Avatars -->
           <button class="avatar-opt-btn selected" onclick="pickAvatarEmoji('🐻', this)">🐻</button>
           <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🦊', this)">🦊</button>
           <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🐼', this)">🐼</button>
@@ -2256,61 +2251,59 @@ body {
     </div>
   </div>
 
-</div> <!-- /app-shell -->
+  <!-- ══════════════════════════════════════════════════════
+       MODAL: ПРОСМОТР БИЛЕТА (ТОЧНО КАК В ticket.html)
+  ══════════════════════════════════════════════════════ -->
+  <div id="ticket-view-modal">
+    <div class="tkt-view-container">
+      <div class="tkt-header">
+        <span class="tkt-back" onclick="closeTicketViewerModal()">&#8592;</span>
+        <span class="tkt-title">Билет</span>
+      </div>
 
-
-<!-- ══════════════════════════════════════════════════════════
-     MODAL: ЭКРАН СГЕНЕРИРОВАННОГО БИЛЕТА (ТОЧНО КАК В ticket.html)
-══════════════════════════════════════════════════════════ -->
-<div id="ticket-view-modal">
-  <div class="tkt-view-container">
-    <div class="tkt-header">
-      <span class="tkt-back" onclick="closeTicketViewerModal()">&#8592;</span>
-      <span class="tkt-title">Билет</span>
-    </div>
-
-    <div class="tkt-body">
-      <div class="route-row-tkt">
-        <div class="route-text-tkt" id="viewerRouteText">Балтийский вокзал — Сергиево (Володарская)</div>
-        <div class="train-icon-orange">
-          <svg width="21" height="21" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="9" width="18" height="11" rx="2.5" fill="white"/>
-            <rect x="5.5" y="10.5" width="6" height="4.5" rx="1" fill="#fc7f1e"/>
-            <rect x="14.5" y="10.5" width="6" height="4.5" rx="1" fill="#fc7f1e"/>
-            <rect x="12.5" y="10.5" width="1" height="4.5" fill="white"/>
-            <rect x="4" y="17" width="18" height="1.5" fill="#fc7f1e" opacity="0.4"/>
-            <circle cx="7.5" cy="19.5" r="1.2" fill="white"/>
-            <circle cx="18.5" cy="19.5" r="1.2" fill="white"/>
-            <rect x="10" y="5.5" width="1.5" height="3.5" rx="0.5" fill="white" opacity="0.9"/>
-            <rect x="14.5" y="5.5" width="1.5" height="3.5" rx="0.5" fill="white" opacity="0.9"/>
-            <rect x="7.5" y="5" width="11" height="1.2" rx="0.6" fill="white" opacity="0.7"/>
-            <rect x="10.5" y="20.5" width="5" height="2" rx="0.8" fill="white" opacity="0.6"/>
-          </svg>
+      <div class="tkt-body">
+        <div class="route-row-tkt">
+          <div class="route-text-tkt" id="viewerRouteText">Балтийский вокзал — Сергиево (Володарская)</div>
+          <div class="train-icon-orange">
+            <svg width="21" height="21" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="9" width="18" height="11" rx="2.5" fill="white"/>
+              <rect x="5.5" y="10.5" width="6" height="4.5" rx="1" fill="#fc7f1e"/>
+              <rect x="14.5" y="10.5" width="6" height="4.5" rx="1" fill="#fc7f1e"/>
+              <rect x="12.5" y="10.5" width="1" height="4.5" fill="white"/>
+              <rect x="4" y="17" width="18" height="1.5" fill="#fc7f1e" opacity="0.4"/>
+              <circle cx="7.5" cy="19.5" r="1.2" fill="white"/>
+              <circle cx="18.5" cy="19.5" r="1.2" fill="white"/>
+              <rect x="10" y="5.5" width="1.5" height="3.5" rx="0.5" fill="white" opacity="0.9"/>
+              <rect x="14.5" y="5.5" width="1.5" height="3.5" rx="0.5" fill="white" opacity="0.9"/>
+              <rect x="7.5" y="5" width="11" height="1.2" rx="0.6" fill="white" opacity="0.7"/>
+              <rect x="10.5" y="20.5" width="5" height="2" rx="0.8" fill="white" opacity="0.6"/>
+            </svg>
+          </div>
         </div>
+
+        <div class="tkt-date-bold" id="viewerTicketDate">14 октября</div>
+        <div class="tkt-valid-gray" id="viewerTicketValid">Действует до 01:00 15 октября</div>
+
+        <div class="barcode-wrap" id="barcodeWrap">
+          <img id="barcodeImg" src="" alt="barcode">
+        </div>
+
+        <div class="tkt-type-txt">Полный, в одну сторону</div>
+        <div class="tkt-subtype-txt" id="viewerTicketSubtype">Билет на электричку «Ласточка»</div>
       </div>
 
-      <div class="tkt-date-bold" id="viewerTicketDate">14 октября</div>
-      <div class="tkt-valid-gray" id="viewerTicketValid">Действует до 01:00 15 октября</div>
-
-      <div class="barcode-wrap" id="barcodeWrap">
-        <img id="barcodeImg" src="" alt="barcode">
+      <div class="tkt-footer">
+        <div class="tkt-price-txt" id="viewerTicketPrice">65 ₽</div>
+        <div class="tkt-number-txt" id="viewerTicketNumber">Билет № 8492019482014</div>
       </div>
-
-      <div class="tkt-type-txt">Полный, в одну сторону</div>
-      <div class="tkt-subtype-txt" id="viewerTicketSubtype">Билет на электричку «Ласточка»</div>
-    </div>
-
-    <div class="tkt-footer">
-      <div class="tkt-price-txt" id="viewerTicketPrice">65 ₽</div>
-      <div class="tkt-number-txt" id="viewerTicketNumber">Билет № 8492019482014</div>
     </div>
   </div>
-</div>
 
+</div> <!-- /app-shell -->
 
 <script>
 /* ──────────────────────────────────────────────────────────
-   STATE & DATA
+   STATE & CORE LOGIC
 ────────────────────────────────────────────────────────── */
 var APP_STATE = {
   currentTab: 'routes',
@@ -2323,7 +2316,8 @@ var APP_STATE = {
   username: 'vvvv812',
   tickets: [],
   favorites: [],
-  selectedTrainFilter: 'Все поезда'
+  selectedTrainFilter: 'Все поезда',
+  schDirection: 'В любую сторону'
 };
 
 var PRESET_STATIONS = [
@@ -2349,7 +2343,9 @@ window.addEventListener('DOMContentLoaded', function(){
   initDateInputs();
   loadSavedTickets();
   loadSavedFavorites();
+  loadTogglePrefs();
   setupBarcodeFlip();
+  switchMainTab('routes'); // Clean initial state
 });
 
 function initLiveClock(){
@@ -2374,7 +2370,49 @@ function initDateInputs(){
 }
 
 /* ──────────────────────────────────────────────────────────
-   PROFILE: RANDOM OR CUSTOM ACCOUNTS
+   CLEAN SCREEN MANAGEMENT (FIXES TAB DUPLICATION & STACKING BUG)
+────────────────────────────────────────────────────────── */
+function showScreen(screenId){
+  // 1. Hide all screens explicitly (removes both inline style and active class)
+  var allScreens = document.querySelectorAll('.screen-view, .train-details-view');
+  allScreens.forEach(function(s){
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+
+  // 2. Show the targeted screen cleanly
+  var target = document.getElementById(screenId);
+  if(target){
+    target.classList.add('active');
+    target.style.display = 'block';
+  }
+
+  // Scroll content to top
+  var content = document.querySelector('.content-area');
+  if(content) content.scrollTop = 0;
+}
+
+function switchMainTab(tabKey){
+  APP_STATE.currentTab = tabKey;
+  showScreen('screen-' + tabKey);
+
+  // Update bottom tab buttons styling
+  var tabButtons = document.querySelectorAll('.tab-item-btn');
+  tabButtons.forEach(function(btn){ btn.classList.remove('active'); });
+
+  var map = {
+    'routes': 'tabBtnRoutes',
+    'favorites': 'tabBtnFavorites',
+    'tickets': 'tabBtnTickets',
+    'schedule': 'tabBtnSchedule',
+    'settings': 'tabBtnSettings'
+  };
+  var activeBtn = document.getElementById(map[tabKey]);
+  if(activeBtn) activeBtn.classList.add('active');
+}
+
+/* ──────────────────────────────────────────────────────────
+   PROFILE / ACCOUNT: RANDOM & CUSTOM
 ────────────────────────────────────────────────────────── */
 function initProfile(){
   var savedUser = localStorage.getItem('y_tkt_user');
@@ -2384,7 +2422,6 @@ function initProfile(){
     APP_STATE.username = savedUser;
     APP_STATE.selectedAvatar = savedAvatar;
   } else {
-    // Generate randomly as requested by user
     randomizeProfile(false);
   }
   updateProfileDisplay();
@@ -2456,38 +2493,7 @@ function saveProfileChanges(){
 }
 
 /* ──────────────────────────────────────────────────────────
-   NAVIGATION: TAB SWITCHER
-────────────────────────────────────────────────────────── */
-function switchMainTab(tabKey){
-  APP_STATE.currentTab = tabKey;
-
-  // Toggle screens
-  var screens = document.querySelectorAll('.screen-view');
-  screens.forEach(function(s){ s.classList.remove('active'); });
-
-  var targetScreen = document.getElementById('screen-' + tabKey);
-  if(targetScreen) targetScreen.classList.add('active');
-
-  // Close details if open
-  closeTrainDetails();
-
-  // Tab buttons styling
-  var tabButtons = document.querySelectorAll('.tab-item-btn');
-  tabButtons.forEach(function(btn){ btn.classList.remove('active'); });
-
-  var map = {
-    'routes': 'tabBtnRoutes',
-    'favorites': 'tabBtnFavorites',
-    'tickets': 'tabBtnTickets',
-    'schedule': 'tabBtnSchedule',
-    'settings': 'tabBtnSettings'
-  };
-  var activeBtn = document.getElementById(map[tabKey]);
-  if(activeBtn) activeBtn.classList.add('active');
-}
-
-/* ──────────────────────────────────────────────────────────
-   TAB 1: ROUTES LOGIC
+   TAB 1: ROUTES
 ────────────────────────────────────────────────────────── */
 function switchRouteSubTab(sub){
   APP_STATE.activeRouteSubTab = sub;
@@ -2559,15 +2565,11 @@ function openStationModal(target){
   var tTitle = document.getElementById('stationModalHeaderTitle');
   var inp = document.getElementById('stationModalSearchInput');
 
-  if(target === 'from'){
-    tTitle.textContent = 'Откуда';
-  } else {
-    tTitle.textContent = 'Куда';
-  }
+  tTitle.textContent = (target === 'from') ? 'Откуда' : 'Куда';
   inp.value = '';
   filterStationsList('');
   m.classList.add('active');
-  setTimeout(function(){ inp.focus(); }, 150);
+  setTimeout(function(){ inp.focus(); }, 100);
 }
 
 function closeStationModal(){
@@ -2580,11 +2582,10 @@ function filterStationsList(query){
   list.innerHTML = '';
   var q = (query || '').toLowerCase().trim();
 
-  // If query is custom, allow selecting it
   if(q){
     var customDiv = document.createElement('div');
     customDiv.className = 'station-history-item';
-    customDiv.innerHTML = '<div class="st-clock-icon">🔍</div><div class="st-text-col"><span class="st-name-main">' + escapeHtml(query) + '</span><span class="st-name-sub">Выбрать свой вариант</span></div>';
+    customDiv.innerHTML = '<div class="st-clock-icon">🔍</div><div class="st-text-col"><span class="st-name-main">' + escapeHtml(query) + '</span><span class="st-name-sub">Выбрать этот вариант</span></div>';
     customDiv.onclick = function(){ selectStationItem(query); };
     list.appendChild(customDiv);
   }
@@ -2617,7 +2618,6 @@ function selectStationItem(name){
 var CURRENT_TRAIN_DETAILS = {
   id: '7191',
   category: '«ЛАСТОЧКА»',
-  route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1',
   depart: '20:40',
   arrive: '21:07'
 };
@@ -2632,22 +2632,11 @@ function openTrainDetails(trainId, dep, arr, cat){
   document.getElementById('detCategory').textContent = cat.toUpperCase();
   document.getElementById('detRouteBig').textContent = APP_STATE.routeFrom + ' — ' + APP_STATE.routeTo;
 
-  var detView = document.getElementById('screen-train-details');
-  detView.classList.add('active');
-
-  // Hide current active tab view
-  var activeScreen = document.querySelector('.screen-view.active');
-  if(activeScreen && activeScreen !== detView) activeScreen.style.display = 'none';
-  window.scrollTo(0,0);
+  showScreen('screen-train-details');
 }
 
 function closeTrainDetails(){
-  var detView = document.getElementById('screen-train-details');
-  detView.classList.remove('active');
-
-  // Restore current tab screen
-  var current = document.getElementById('screen-' + APP_STATE.currentTab);
-  if(current) current.style.display = 'block';
+  showScreen('screen-' + APP_STATE.currentTab);
 }
 
 function toggleTimelineMiddleStops(){
@@ -2666,14 +2655,12 @@ function openTicketCreatorFromTrain(){
   closeTrainDetails();
   switchMainTab('tickets');
   switchTicketSubTab('create');
-
-  // Fill stations
   setDropdownOrCustom('formFrom', APP_STATE.routeFrom);
   setDropdownOrCustom('formTo', APP_STATE.routeTo);
 }
 
 /* ──────────────────────────────────────────────────────────
-   TAB 2: BOOKMARKS / FAVORITES
+   TAB 2: FAVORITES
 ────────────────────────────────────────────────────────── */
 function toggleRouteBookmark(){
   var routeStr = APP_STATE.routeFrom + ' — ' + APP_STATE.routeTo;
@@ -2717,7 +2704,7 @@ function renderFavorites(){
     listBox.style.display = 'flex';
     listBox.innerHTML = '';
 
-    APP_STATE.favorites.forEach(function(r, idx){
+    APP_STATE.favorites.forEach(function(r){
       var c = document.createElement('div');
       c.className = 'fav-route-card';
       c.innerHTML = '<span style="font-weight:600;font-size:15px;color:#fff;">' + escapeHtml(r) + '</span><span style="color:#f59e0b;font-size:18px;">★</span>';
@@ -2747,7 +2734,7 @@ function clearFavorites(){
 }
 
 /* ──────────────────────────────────────────────────────────
-   TAB 3: БИЛЕТЫ (ГЕНЕРАТОР + СПИСОК + ПРОСМОТР)
+   TAB 3: TICKETS (GENERATOR + LIST + FULL AUTHENTIC VIEWER)
 ────────────────────────────────────────────────────────── */
 var _formPrice65 = true;
 
@@ -2784,11 +2771,6 @@ function onStationDropdownChange(prefix){
 }
 
 function swapFormStations(){
-  var selFrom = document.getElementById('formFromSelect');
-  var selTo = document.getElementById('formToSelect');
-  var custFrom = document.getElementById('formFromCustom');
-  var custTo = document.getElementById('formToCustom');
-
   var valFrom = getStationValue('formFrom');
   var valTo = getStationValue('formTo');
 
@@ -2864,6 +2846,20 @@ function quickCreateAero(route, price){
   switchTicketSubTab('my');
 }
 
+function quickCreateFromSchedule(from, to, price, type){
+  createTicketData({
+    from: from,
+    to: to,
+    date: new Date().toISOString().split('T')[0],
+    type: type || 'lastochka',
+    price: price || '65'
+  });
+  switchMainTab('tickets');
+  switchTicketSubTab('my');
+  // Immediately show the newly created ticket
+  openTicketViewer(APP_STATE.tickets[APP_STATE.tickets.length - 1]);
+}
+
 function onGenerateTicketSubmit(){
   var from = getStationValue('formFrom');
   var to = getStationValue('formTo');
@@ -2887,7 +2883,6 @@ function onGenerateTicketSubmit(){
   });
 
   switchTicketSubTab('my');
-  // Immediately show the newly generated ticket
   openTicketViewer(APP_STATE.tickets[APP_STATE.tickets.length - 1]);
 }
 
@@ -2968,7 +2963,7 @@ function renderUserTickets(){
 }
 
 /* ──────────────────────────────────────────────────────────
-   TICKET VIEWER MODAL (ТОЧНО КАК В ticket.html)
+   AUTHENTIC TICKET VIEWER (EXACT LAYOUT & ANIMATION FROM ticket.html)
 ────────────────────────────────────────────────────────── */
 var spinning = false;
 
@@ -2989,19 +2984,18 @@ function openTicketViewer(tkt){
       ? 'Билет на электричку «Ласточка»'
       : 'Билет на электричку стандарт (обычный пригородный поезд)';
 
-  // Pick Barcode
+  // Pick Barcode (from barcodes.js or fallback)
   var barcodeSrc = '';
   if(window.BARCODES && window.BARCODES.length > 0){
     var idx = Math.floor(Math.random() * window.BARCODES.length);
     barcodeSrc = window.BARCODES[idx];
   } else {
-    // Fallback crisp barcode SVG data URI
     barcodeSrc = createFallbackBarcodeSvg();
   }
   document.getElementById('barcodeImg').src = barcodeSrc;
 
   modal.classList.add('active');
-  window.scrollTo(0,0);
+  modal.scrollTop = 0;
 }
 
 function closeTicketViewerModal(){
@@ -3049,7 +3043,7 @@ function setupBarcodeFlip(){
 function createFallbackBarcodeSvg(){
   var bars = '';
   var x = 10;
-  for(var i=0; i<50; i++){
+  for(var i=0; i<52; i++){
     var w = (i%3===0) ? 3 : ((i%2===0)?1:2);
     bars += '<rect x="'+x+'" y="0" width="'+w+'" height="80" fill="#000"/>';
     x += w + (i%4===0 ? 3 : 2);
@@ -3084,6 +3078,65 @@ function selectSchDate(pill){
     pAll.classList.add('active');
     head.textContent = 'ВСЕ ДНИ НЕДЕЛИ';
   }
+}
+
+function cycleSchDate(){
+  var pToday = document.getElementById('schPillToday');
+  if(pToday.classList.contains('active')) selectSchDate('tomorrow');
+  else selectSchDate('today');
+}
+
+function toggleSchDirectionFilter(){
+  var txt = document.getElementById('schDirTxt');
+  if(APP_STATE.schDirection === 'В любую сторону'){
+    APP_STATE.schDirection = 'В сторону Ораниенбаума';
+  } else if(APP_STATE.schDirection === 'В сторону Ораниенбаума'){
+    APP_STATE.schDirection = 'В сторону Гатчины';
+  } else {
+    APP_STATE.schDirection = 'В любую сторону';
+  }
+  txt.textContent = APP_STATE.schDirection;
+  filterScheduleList(document.getElementById('schFilterInput').value);
+}
+
+function filterScheduleList(query){
+  var q = (query || '').toLowerCase().trim();
+  var items = document.querySelectorAll('#schItemsList .sch-item-row');
+  var dir = APP_STATE.schDirection;
+
+  items.forEach(function(item){
+    var route = (item.getAttribute('data-route') || '').toLowerCase();
+    var matchQuery = !q || route.indexOf(q) !== -1 || item.innerText.toLowerCase().indexOf(q) !== -1;
+    var matchDir = true;
+    if(dir === 'В сторону Ораниенбаума') matchDir = route.indexOf('ораниенбаум') !== -1 || route.indexOf('калище') !== -1;
+    if(dir === 'В сторону Гатчины') matchDir = route.indexOf('гатчина') !== -1 || route.indexOf('сиверская') !== -1;
+
+    item.style.display = (matchQuery && matchDir) ? 'flex' : 'none';
+  });
+}
+
+/* ──────────────────────────────────────────────────────────
+   SETTINGS TOGGLES PERSISTENCE
+────────────────────────────────────────────────────────── */
+function saveTogglePref(key, val){
+  localStorage.setItem('y_pref_' + key, val ? '1' : '0');
+}
+
+function loadTogglePrefs(){
+  var stops = localStorage.getItem('y_pref_stops') === '1';
+  var num = localStorage.getItem('y_pref_num') === '1';
+  var notif = localStorage.getItem('y_pref_notif') === '1';
+  var car = localStorage.getItem('y_pref_carshare') === '1';
+
+  var elStops = document.getElementById('toggleStops');
+  var elNum = document.getElementById('toggleTrainNum');
+  var elNotif = document.getElementById('toggleNotif');
+  var elCar = document.getElementById('toggleCarshare');
+
+  if(elStops) elStops.checked = stops;
+  if(elNum) elNum.checked = num;
+  if(elNotif) elNotif.checked = notif;
+  if(elCar) elCar.checked = car;
 }
 
 /* ──────────────────────────────────────────────────────────
