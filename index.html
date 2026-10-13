@@ -1,8 +1,3112 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-<meta http-equiv="refresh" content="0; url=ticket.html">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Яндекс Электрички — Билеты и Расписания</title>
+<script src="barcodes.js"></script>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg-main: #141416;
+  --bg-card: #1f1f23;
+  --bg-item: #25252a;
+  --bg-subtle: #2d2d34;
+  --bg-input: #2a2a30;
+  --text-main: #ffffff;
+  --text-muted: #8e8e93;
+  --text-sub: #a1a1a8;
+  --accent-yellow: #f7b700;
+  --accent-yellow-btn: #fdb813;
+  --accent-orange: #ff7020;
+  --tag-red: #ff453a;
+  --border-subtle: #2c2c32;
+  --tab-inactive: #888890;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+
+body {
+  background: #000000;
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+
+/* App Container (iPhone layout centered on desktop, full on mobile) */
+#app-shell {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  background: var(--bg-main);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
+  overflow-x: hidden;
+}
+
+/* iOS Status Bar */
+.status-bar {
+  height: 44px;
+  padding: 12px 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  z-index: 100;
+}
+.status-bar .status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Views wrapper */
+.content-area {
+  flex: 1;
+  padding-bottom: 84px; /* space for tab bar */
+  overflow-y: auto;
+}
+
+.screen-view {
+  display: none;
+  width: 100%;
+  animation: fadeIn 0.2s ease;
+}
+.screen-view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 1: ПОИСК / МАРШРУТЫ
+────────────────────────────────────────────────────────── */
+.search-header-pills {
+  display: flex;
+  justify-content: center;
+  margin: 6px 16px 14px;
+  background: #232328;
+  padding: 3px;
+  border-radius: 20px;
+}
+.search-pill-btn {
+  flex: 1;
+  text-align: center;
+  padding: 7px 0;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 17px;
+  border: none;
+  background: transparent;
+  color: #8e8e93;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.search-pill-btn.active {
+  background: #3a3a40;
+  color: #ffffff;
+}
+
+/* Route input card */
+.route-card {
+  margin: 0 16px 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  position: relative;
+}
+.route-row-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  cursor: pointer;
+}
+.route-row-item:first-child {
+  border-bottom: 1px solid var(--border-subtle);
+}
+.route-row-icon {
+  width: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-muted);
+}
+.route-row-text {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.route-row-text.placeholder {
+  color: var(--text-muted);
+}
+
+.route-actions-side {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn-swap-route, .btn-bookmark-route {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-bookmark-route.bookmarked {
+  color: var(--accent-yellow);
+}
+
+/* Date row */
+.date-selector-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 16px 12px;
+}
+.cal-icon-pill {
+  background: var(--bg-card);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.date-pill {
+  padding: 8px 14px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-sub);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.date-pill.active {
+  background: #36363c;
+  color: #fff;
+}
+
+/* Filter drop */
+.filter-row {
+  display: flex;
+  margin: 0 16px 14px;
+}
+.filter-btn {
+  background: var(--bg-card);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: var(--text-sub);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* Trains list */
+.trains-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border-subtle);
+}
+.train-card-item {
+  background: var(--bg-main);
+  padding: 14px 16px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s;
+}
+.train-card-item:hover, .train-card-item:active {
+  background: #1c1c20;
+}
+.train-badge-soon {
+  display: inline-block;
+  background: var(--accent-yellow);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+.train-time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+.train-times-left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.train-t-depart {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+.train-t-dur {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.train-t-arrive {
+  font-size: 17px;
+  color: var(--text-muted);
+}
+.train-price-right {
+  font-size: 17px;
+  font-weight: 500;
+  color: #fff;
+}
+.train-type-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-orange);
+  margin-bottom: 2px;
+}
+.train-route-title {
+  font-size: 14px;
+  color: #dedee3;
+  line-height: 1.3;
+}
+
+/* Empty tracks illustration */
+.empty-rail-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+.empty-rail-circle {
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.empty-rail-text {
+  font-size: 16px;
+  font-weight: 400;
+  color: #dedee3;
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+/* Banner ad */
+.ad-banner-kred {
+  margin: 16px 16px 8px;
+  padding: 12px 14px;
+  background: #1a1a1e;
+  border: 1px solid #2a2a30;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.ad-banner-kred .ad-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #fff;
+}
+.ad-banner-kred .ad-logo-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   MODAL: ВЫБОР СТАНЦИИ («Откуда» / «Куда»)
+────────────────────────────────────────────────────────── */
+.station-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: flex-end;
+}
+.station-modal.active {
+  display: flex;
+}
+.station-modal-content {
+  width: 100%;
+  max-width: 440px;
+  height: 92vh;
+  background: #1c1c1e;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.station-modal-header {
+  padding: 16px 20px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #2c2c30;
+}
+.station-modal-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 auto;
+}
+.btn-cancel-modal {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.station-input-wrap {
+  padding: 12px 20px;
+  position: relative;
+  border-bottom: 1px solid #333338;
+}
+.station-search-input {
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #fff;
+  outline: none;
+  padding: 4px 0;
+}
+.station-search-input::placeholder {
+  color: #636366;
+}
+
+.station-history-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.station-history-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #26262b;
+}
+.station-history-item:active {
+  background: #2a2a30;
+}
+.station-history-item .st-clock-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid #8e8e93;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8e8e93;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.st-text-col {
+  display: flex;
+  flex-direction: column;
+}
+.st-name-main {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+}
+.st-name-sub {
+  font-size: 12px;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   SCREEN: ДЕТАЛИ ПОЕЗДА («Поезд 7191»)
+────────────────────────────────────────────────────────── */
+.train-details-view {
+  display: none;
+  width: 100%;
+  background: var(--bg-main);
+  padding-bottom: 84px;
+}
+.train-details-view.active {
+  display: block;
+}
+.train-det-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.train-det-nav .btn-back-det {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+}
+.train-det-title {
+  font-size: 17px;
+  font-weight: 600;
+}
+.train-det-head-card {
+  padding: 16px;
+}
+.train-det-cat {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-orange);
+  margin-bottom: 4px;
+}
+.train-det-route-big {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.train-det-schedule-info {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.4;
+}
+
+.ad-card-blue {
+  margin: 10px 16px 14px;
+  background: #3730a3;
+  padding: 12px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.ad-card-blue .ad-txt-1 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+.ad-card-blue .ad-txt-2 {
+  font-size: 12px;
+  color: #c7d2fe;
+}
+
+.train-tariffs-btn {
+  margin: 0 16px 16px;
+  width: calc(100% - 32px);
+  padding: 12px;
+  background: transparent;
+  border: 1.5px solid var(--accent-yellow);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Timeline */
+.timeline-wrap {
+  padding: 10px 16px 20px;
+}
+.timeline-row {
+  display: flex;
+  align-items: flex-start;
+  min-height: 48px;
+  position: relative;
+}
+.timeline-time-col {
+  width: 90px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #dedee3;
+  padding-top: 2px;
+}
+.timeline-line-col {
+  width: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.timeline-rail-bar {
+  position: absolute;
+  top: 10px;
+  bottom: -10px;
+  width: 3px;
+  background: var(--accent-yellow);
+}
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--accent-yellow);
+  z-index: 2;
+  margin-top: 5px;
+}
+.timeline-name-col {
+  flex: 1;
+  padding-left: 10px;
+  padding-top: 2px;
+}
+.timeline-st-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+}
+.timeline-st-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.timeline-expand-btn {
+  display: inline-block;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.btn-report-err {
+  margin: 16px;
+  width: calc(100% - 32px);
+  padding: 13px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  color: #dedee3;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 2: ИЗБРАННОЕ
+────────────────────────────────────────────────────────── */
+.fav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  font-size: 17px;
+  font-weight: 600;
+}
+.fav-header .fav-edit-btn {
+  color: var(--text-muted);
+  font-size: 15px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.fav-routes-list {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fav-route-card {
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 3: БИЛЕТЫ (Вкладка по центру)
+────────────────────────────────────────────────────────── */
+.tickets-tab-header {
+  padding: 14px 20px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tickets-tab-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.tickets-subnav-pills {
+  display: flex;
+  margin: 6px 16px 16px;
+  background: var(--bg-card);
+  padding: 3px;
+  border-radius: 20px;
+}
+.tkt-subnav-btn {
+  flex: 1;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 17px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tkt-subnav-btn.active {
+  background: #3b3b42;
+  color: #fff;
+}
+
+/* Generator Form */
+.ticket-form-card {
+  margin: 0 16px 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.tkt-form-field label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.tkt-form-field select, .tkt-form-field input[type="text"], .tkt-form-field input[type="date"], .tkt-form-field input[type="number"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #333338;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #fff;
+  background: var(--bg-input);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.tkt-form-field select:focus, .tkt-form-field input:focus {
+  border-color: var(--accent-orange);
+}
+
+.tkt-swap-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.tkt-swap-row .tkt-form-field {
+  flex: 1;
+}
+.tkt-swap-btn {
+  background: #333338;
+  border: none;
+  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  color: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tkt-price-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.btn-price-65 {
+  padding: 12px 20px;
+  border: 1.5px solid var(--accent-orange);
+  background: var(--accent-orange);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-generate-main {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent-orange);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity 0.2s;
+}
+.btn-generate-main:active {
+  opacity: 0.85;
+}
+
+/* User tickets list */
+.user-tickets-list {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.user-ticket-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #2d2d34;
+  transition: border-color 0.2s;
+}
+.user-ticket-card:hover {
+  border-color: var(--accent-orange);
+}
+.user-ticket-card .tkt-card-route {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.user-ticket-card .tkt-card-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.user-ticket-card .tkt-card-status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(52,211,153,0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.user-ticket-card .tkt-card-del {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+}
+.user-ticket-card .tkt-card-del:hover {
+  color: #ef4444;
+}
+
+/* Authentic Aeroexpress Quick Buttons */
+.aero-quick-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent-yellow-btn);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* ──────────────────────────────────────────────────────────
+   MODAL / VIEW: ВНЕШНИЙ ВИД БИЛЕТА (ТОЧНО КАК В ticket.html)
+────────────────────────────────────────────────────────── */
+#ticket-view-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  color: #000;
+  z-index: 2000;
+  overflow-y: auto;
+  flex-direction: column;
+}
+#ticket-view-modal.active {
+  display: flex;
+}
+
+.tkt-view-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.tkt-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 16px 14px;
+  position: relative;
+  border-bottom: 1px solid #f0f0f0;
+}
+.tkt-back {
+  position: absolute;
+  left: 16px;
+  font-size: 28px;
+  color: #333;
+  cursor: pointer;
+  line-height: 1;
+  font-weight: 400;
+}
+.tkt-title {
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+}
+
+/* Body */
+.tkt-body {
+  padding: 22px 20px 20px;
+  flex: 1;
+}
+.route-row-tkt {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.route-text-tkt {
+  font-size: 20px;
+  font-weight: 300;
+  color: #000;
+  line-height: 1.3;
+  flex: 1;
+}
+.train-icon-orange {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fc7f1e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.tkt-date-bold {
+  margin-top: 16px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+}
+.tkt-valid-gray {
+  margin-top: 3px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #999;
+}
+
+/* Barcode */
+.barcode-wrap {
+  margin: 18px 0 20px 0;
+  cursor: pointer;
+  display: block;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#barcodeImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+  will-change: transform;
+}
+.tkt-type-txt {
+  font-size: 16px;
+  font-weight: 400;
+  color: #000;
+}
+.tkt-subtype-txt {
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+/* Footer */
+.tkt-footer {
+  padding: 16px 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid #f0f0f0;
+}
+.tkt-price-txt {
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+}
+.tkt-number-txt {
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 4: РАСПИСАНИЕ СТАНЦИИ (Табло)
+────────────────────────────────────────────────────────── */
+.schedule-header {
+  padding: 14px 16px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sch-st-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.sch-info-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.sch-sub-dir {
+  padding: 0 16px 12px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.sch-date-label {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.sch-list-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.sch-item-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #232328;
+  cursor: pointer;
+}
+.sch-item-row:active {
+  background: #1c1c20;
+}
+.sch-time-big {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  width: 60px;
+  flex-shrink: 0;
+}
+.sch-desc-col {
+  flex: 1;
+}
+.sch-badge-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.tag-red-txt {
+  color: var(--tag-red);
+}
+.tag-orange-txt {
+  color: var(--accent-orange);
+}
+.sch-route-name {
+  font-size: 14px;
+  color: #dedee3;
+  line-height: 1.35;
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 5: НАСТРОЙКИ (Профиль и тумблеры)
+────────────────────────────────────────────────────────── */
+.settings-view-wrap {
+  padding: 0 0 20px;
+}
+.settings-header-title {
+  padding: 14px 16px 12px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Profile card */
+.profile-card-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #26262b;
+  cursor: pointer;
+  background: var(--bg-card);
+  margin-bottom: 12px;
+}
+.profile-logout-txt {
+  font-size: 15px;
+  color: #dedee3;
+}
+.profile-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profile-username {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+.profile-avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  border: 1.5px solid #4b5563;
+}
+
+/* Settings items list */
+.settings-list {
+  display: flex;
+  flex-direction: column;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #26262b;
+  font-size: 15px;
+}
+.setting-title-col {
+  display: flex;
+  flex-direction: column;
+  padding-right: 12px;
+}
+.setting-main-label {
+  color: #fff;
+}
+.setting-sub-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.3;
+}
+.setting-val-arrow {
+  color: var(--accent-yellow);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-bind-troika {
+  background: #38383e;
+  border: none;
+  border-radius: 14px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* iOS Toggle switch */
+.ios-toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.ios-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.ios-toggle .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #39393d;
+  transition: .3s;
+  border-radius: 30px;
+}
+.ios-toggle .slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+.ios-toggle input:checked + .slider {
+  background-color: #34c759;
+}
+.ios-toggle input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Profile Edit Modal */
+.profile-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.75);
+  z-index: 1500;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.profile-modal.active {
+  display: flex;
+}
+.profile-modal-box {
+  width: 100%;
+  max-width: 360px;
+  background: #242429;
+  border-radius: 18px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.profile-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+.profile-input-field {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #3e3e46;
+  background: #19191c;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.avatar-opt-btn {
+  font-size: 24px;
+  background: #2e2e36;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-opt-btn.selected {
+  border-color: var(--accent-yellow);
+}
+.btn-rand-prof {
+  background: #33333d;
+  color: #dedee3;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-save-prof {
+  background: var(--accent-yellow-btn);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ──────────────────────────────────────────────────────────
+   BOTTOM TAB BAR (5 Вкладок)
+────────────────────────────────────────────────────────── */
+.bottom-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px;
+  height: 68px;
+  background: #1a1a1e;
+  border-top: 1px solid #28282e;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 500;
+  padding-bottom: 6px;
+}
+.tab-item-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--tab-inactive);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.tab-item-btn.active {
+  color: var(--accent-yellow);
+}
+.tab-item-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+.tab-item-btn .tab-label {
+  font-size: 10px;
+  font-weight: 500;
+}
+.tab-badge-count {
+  position: absolute;
+  top: 4px;
+  right: calc(50% - 16px);
+  background: var(--accent-orange);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 5px;
+}
+</style>
 </head>
 <body>
+
+<div id="app-shell">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span id="liveTime">20:20</span>
+    <div class="status-icons">
+      <!-- Signal -->
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+        <rect x="0" y="8" width="3" height="4" rx="0.5"/>
+        <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5"/>
+        <rect x="9" y="3" width="3" height="9" rx="0.5"/>
+        <rect x="13.5" y="0.5" width="3" height="11.5" rx="0.5"/>
+      </svg>
+      <!-- Wi-Fi -->
+      <svg width="15" height="12" viewBox="0 0 15 12" fill="white">
+        <path d="M7.5 3.5C9.7 3.5 11.7 4.4 13.1 5.8L14.5 4.4C12.7 2.6 10.2 1.5 7.5 1.5C4.8 1.5 2.3 2.6 0.5 4.4L1.9 5.8C3.3 4.4 5.3 3.5 7.5 3.5ZM7.5 7.5C8.6 7.5 9.6 7.9 10.3 8.7L11.7 7.3C10.6 6.2 9.1 5.5 7.5 5.5C5.9 5.5 4.4 6.2 3.3 7.3L4.7 8.7C5.4 7.9 6.4 7.5 7.5 7.5ZM7.5 9.5C6.7 9.5 6 10.2 6 11C6 11.8 6.7 12.5 7.5 12.5C8.3 12.5 9 11.8 9 11C9 10.2 8.3 9.5 7.5 9.5Z"/>
+      </svg>
+      <!-- Battery -->
+      <svg width="24" height="12" viewBox="0 0 24 12" fill="white">
+        <rect x="1" y="1" width="19" height="10" rx="3" stroke="white" stroke-width="1.5" fill="none"/>
+        <rect x="3" y="3" width="13" height="6" rx="1.5" fill="white"/>
+        <path d="M22 4.5V7.5C22.6 7.2 23 6.6 23 6C23 5.4 22.6 4.8 22 4.5Z" fill="white"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Content Area containing screens -->
+  <div class="content-area">
+
+    <!-- ══════════════════════════════════════════════════════
+         SCREEN 1: МАРШРУТЫ / ПОИСК
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-routes" class="screen-view active">
+      <!-- Switcher: Электрички / Ж/д билеты -->
+      <div class="search-header-pills">
+        <button class="search-pill-btn active" id="pillElek" onclick="switchRouteSubTab('elek')">Электрички</button>
+        <button class="search-pill-btn" id="pillTrain" onclick="switchRouteSubTab('train')">Ж/д билеты</button>
+      </div>
+
+      <!-- Mode A: Электрички -->
+      <div id="mode-elek-container">
+        <!-- Route Card -->
+        <div class="route-card">
+          <div class="route-row-item" onclick="openStationModal('from')">
+            <div class="route-row-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <circle cx="8" cy="8" r="4"/>
+              </svg>
+            </div>
+            <div class="route-row-text" id="routeFromDisplay">Санкт-Петербург (Балтийский вокзал)</div>
+          </div>
+          <div class="route-row-item" onclick="openStationModal('to')">
+            <div class="route-row-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <circle cx="8" cy="8" r="4"/>
+              </svg>
+            </div>
+            <div class="route-row-text" id="routeToDisplay">Сергиево (Володарская)</div>
+          </div>
+          <!-- Swap & Bookmark -->
+          <div class="route-actions-side">
+            <button class="btn-swap-route" onclick="event.stopPropagation(); swapRouteStations();" title="Поменять местами">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 4v16M7 4l-4 4M7 4l4 4M17 20V4M17 20l-4-4M17 20l4-4"/>
+              </svg>
+            </button>
+            <button class="btn-bookmark-route" id="routeBookmarkBtn" onclick="event.stopPropagation(); toggleRouteBookmark();" title="В избранное">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Date Row -->
+        <div class="date-selector-row">
+          <button class="cal-icon-pill" onclick="cycleDatePills()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </button>
+          <button class="date-pill active" id="datePillToday" onclick="selectDatePill('today')">Сегодня</button>
+          <button class="date-pill" id="datePillTomorrow" onclick="selectDatePill('tomorrow')">Завтра</button>
+          <button class="date-pill" id="datePillAll" onclick="selectDatePill('all')">Все дни</button>
+        </div>
+
+        <!-- Filter Row -->
+        <div class="filter-row">
+          <button class="filter-btn" onclick="toggleTrainFilter()">
+            <span id="trainFilterTxt">Все поезда</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Trains list matching screenshots -->
+        <div class="trains-list" id="trainsListContainer">
+          <!-- Item 1 -->
+          <div class="train-card-item" onclick="openTrainDetails('7191', '20:10', '20:35', '«Ласточка/Финист»')">
+            <div class="train-time-row">
+              <div class="train-times-left">
+                <span class="train-t-depart">20:10</span>
+                <span class="train-t-dur">25 м</span>
+                <span class="train-t-arrive">20:35</span>
+              </div>
+              <div class="train-price-right">65 ₽</div>
+            </div>
+            <div class="train-type-title">«Ласточка/Финист»</div>
+            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="train-card-item" onclick="openTrainDetails('7191', '20:40', '21:07', '«Ласточка»')">
+            <span class="train-badge-soon">через 19 мин</span>
+            <div class="train-time-row">
+              <div class="train-times-left">
+                <span class="train-t-depart">20:40</span>
+                <span class="train-t-dur">27 м</span>
+                <span class="train-t-arrive">21:07</span>
+              </div>
+              <div class="train-price-right">65 ₽</div>
+            </div>
+            <div class="train-type-title">«Ласточка»</div>
+            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="train-card-item" onclick="openTrainDetails('6591', '21:30', '21:57', '«Ласточка/Финист»')">
+            <div class="train-time-row">
+              <div class="train-times-left">
+                <span class="train-t-depart">21:30</span>
+                <span class="train-t-dur">27 м</span>
+                <span class="train-t-arrive">21:57</span>
+              </div>
+              <div class="train-price-right">65 ₽</div>
+            </div>
+            <div class="train-type-title">«Ласточка/Финист»</div>
+            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Калище</div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="train-card-item" onclick="openTrainDetails('6593', '22:00', '22:26', 'Стандарт')">
+            <div class="train-time-row">
+              <div class="train-times-left">
+                <span class="train-t-depart">22:00</span>
+                <span class="train-t-dur">26 м</span>
+                <span class="train-t-arrive">22:26</span>
+              </div>
+              <div class="train-price-right">65 ₽</div>
+            </div>
+            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Калище</div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="train-card-item" onclick="openTrainDetails('6595', '22:05', '22:31', 'Стандарт')">
+            <div class="train-time-row">
+              <div class="train-times-left">
+                <span class="train-t-depart">22:05</span>
+                <span class="train-t-dur">26 м</span>
+                <span class="train-t-arrive">22:31</span>
+              </div>
+              <div class="train-price-right">65 ₽</div>
+            </div>
+            <div class="train-route-title">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+          </div>
+        </div>
+
+        <!-- Ad Banner -->
+        <div class="ad-banner-kred" onclick="alert('Кредистория: Сервис проверки кредитного рейтинга');">
+          <div class="ad-left">
+            <span class="ad-logo-icon">C</span>
+            <span>кредистория</span>
+          </div>
+          <div>Проверьте бесплатно ⓘ</div>
+        </div>
+      </div>
+
+      <!-- Mode B: Ж/д билеты (screenshot 20:19) -->
+      <div id="mode-train-container" style="display:none;">
+        <div class="route-card">
+          <div class="route-row-item" onclick="openStationModal('from')">
+            <div class="route-row-text">Санкт-Петербург</div>
+          </div>
+          <div class="route-row-item" onclick="openStationModal('to')">
+            <div class="route-row-text placeholder">Куда</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin:0 16px 14px;color:#dedee3;font-size:15px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span id="longDistDateLabel">14 октября</span>
+        </div>
+        <button class="aero-quick-btn" style="margin:0 16px 16px;width:calc(100% - 32px);" onclick="alert('Поиск билетов дальнего следования...');">Найти</button>
+
+        <div class="empty-rail-state">
+          <div class="empty-rail-circle">
+            <svg width="148" height="148" viewBox="0 0 148 148">
+              <circle cx="74" cy="74" r="74" fill="#a4d2f5"/>
+              <rect x="0" y="85" width="148" height="63" fill="#877567"/>
+              <circle cx="74" cy="75" r="30" fill="#fbd34d"/>
+              <rect x="56" y="70" width="36" height="15" rx="3" fill="#ffffff"/>
+              <polygon points="74,85 54,148 94,148" fill="#4b3f36"/>
+              <line x1="56" y1="100" x2="92" y2="100" stroke="#fff" stroke-width="2"/>
+              <line x1="53" y1="115" x2="95" y2="115" stroke="#fff" stroke-width="3"/>
+              <line x1="50" y1="130" x2="98" y2="130" stroke="#fff" stroke-width="4"/>
+            </svg>
+          </div>
+          <div class="empty-rail-text">Попробуйте поискать ж/д билеты на поезда дальнего следования</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SCREEN 2: ИЗБРАННОЕ
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-favorites" class="screen-view">
+      <div class="fav-header">
+        <span>Избранное</span>
+        <span class="fav-edit-btn" onclick="clearFavorites();">Изменить</span>
+      </div>
+
+      <div id="favEmptyContainer" class="empty-rail-state" style="padding-top:60px;">
+        <div class="empty-rail-circle">
+          <svg width="148" height="148" viewBox="0 0 148 148">
+            <circle cx="74" cy="74" r="74" fill="#c2410c"/>
+            <rect x="0" y="85" width="148" height="63" fill="#78716c"/>
+            <circle cx="74" cy="85" r="26" fill="#fde047"/>
+            <polygon points="74,85 54,148 94,148" fill="#44403c"/>
+            <line x1="56" y1="100" x2="92" y2="100" stroke="#fff" stroke-width="2"/>
+            <line x1="53" y1="115" x2="95" y2="115" stroke="#fff" stroke-width="3"/>
+            <line x1="50" y1="130" x2="98" y2="130" stroke="#fff" stroke-width="4"/>
+          </svg>
+        </div>
+        <div style="font-size:17px;font-weight:600;margin-bottom:8px;color:#fff;">В избранном пока ничего нет</div>
+        <div style="font-size:14px;color:#9ca3af;line-height:1.4;max-width:280px;">
+          Чтобы добавить сюда найденные электрички, нажмите кнопку с закладкой на экране поиска
+        </div>
+      </div>
+
+      <div id="favListContainer" class="fav-routes-list" style="display:none;"></div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SCREEN 3: БИЛЕТЫ (ВКЛАДКА ПОСЕРЕДИНЕ - ГЕНЕРАТОР И СПИСОК)
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-tickets" class="screen-view">
+      <div class="tickets-tab-header">
+        <span class="tickets-tab-title">Билеты</span>
+      </div>
+
+      <!-- Sub-pills: Мои билеты / Создать билет -->
+      <div class="tickets-subnav-pills">
+        <button class="tkt-subnav-btn active" id="btnSubMyTickets" onclick="switchTicketSubTab('my')">Мои билеты (<span id="tktCountBadge">0</span>)</button>
+        <button class="tkt-subnav-btn" id="btnSubCreateTicket" onclick="switchTicketSubTab('create')">Создать билет</button>
+      </div>
+
+      <!-- View 3.A: Список созданных билетов -->
+      <div id="subview-my-tickets">
+        <!-- If empty -->
+        <div id="tktEmptyBox" style="padding: 20px 16px;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:18px;font-weight:600;margin-bottom:6px;">Вы ещё не покупали билеты</div>
+            <div style="font-size:14px;color:#9ca3af;line-height:1.4;">
+              Создайте билет в конструкторе или выберите направление аэроэкспресса
+            </div>
+          </div>
+
+          <button class="aero-quick-btn" onclick="quickCreateAero('Москва — Шереметьево', '500')">Москва — Шереметьево</button>
+          <button class="aero-quick-btn" onclick="quickCreateAero('Москва — Домодедово', '500')">Москва — Домодедово</button>
+          <button class="aero-quick-btn" onclick="quickCreateAero('Москва — Внуково', '500')">Москва — Внуково</button>
+
+          <button class="btn-generate-main" style="margin-top:16px;" onclick="switchTicketSubTab('create')">
+            + Создать билет на пригородный поезд
+          </button>
+        </div>
+
+        <!-- If has tickets -->
+        <div id="tktListBox" class="user-tickets-list" style="display:none;"></div>
+      </div>
+
+      <!-- View 3.B: Создать билет (Форма генерации) -->
+      <div id="subview-create-ticket" style="display:none;">
+        <div class="ticket-form-card">
+          <!-- From -->
+          <div class="tkt-form-field">
+            <label>Откуда</label>
+            <select id="formFromSelect" onchange="onStationDropdownChange('formFrom')">
+              <option value="Балтийский вокзал" selected>Балтийский вокзал</option>
+              <option value="Ленинский проспект">Ленинский проспект</option>
+              <option value="Сергиево (Володарская)">Сергиево (Володарская)</option>
+              <option value="Ораниенбаум-1">Ораниенбаум-1</option>
+              <option value="Ораниенбаум-2">Ораниенбаум-2</option>
+              <option value="custom">Свой вариант…</option>
+            </select>
+            <input type="text" id="formFromCustom" placeholder="Введите станцию отправления" style="display:none;margin-top:8px;">
+          </div>
+
+          <!-- Swap row + To -->
+          <div class="tkt-swap-row">
+            <div class="tkt-form-field">
+              <label>Куда</label>
+              <select id="formToSelect" onchange="onStationDropdownChange('formTo')">
+                <option value="Сергиево (Володарская)" selected>Сергиево (Володарская)</option>
+                <option value="Балтийский вокзал">Балтийский вокзал</option>
+                <option value="Ленинский проспект">Ленинский проспект</option>
+                <option value="Ораниенбаум-1">Ораниенбаум-1</option>
+                <option value="Ораниенбаум-2">Ораниенбаум-2</option>
+                <option value="custom">Свой вариант…</option>
+              </select>
+              <input type="text" id="formToCustom" placeholder="Введите станцию прибытия" style="display:none;margin-top:8px;">
+            </div>
+            <button class="tkt-swap-btn" onclick="swapFormStations()">⇅</button>
+          </div>
+
+          <!-- Date -->
+          <div class="tkt-form-field">
+            <label>Дата поездки</label>
+            <input type="date" id="formTripDate">
+          </div>
+
+          <!-- Type -->
+          <div class="tkt-form-field">
+            <label>Тип билета</label>
+            <select id="formTicketType">
+              <option value="lastochka">Билет на электричку «Ласточка»</option>
+              <option value="standart">Билет на электричку стандарт (обычный поезд)</option>
+            </select>
+          </div>
+
+          <!-- Price -->
+          <div class="tkt-form-field">
+            <label>Цена</label>
+            <div class="tkt-price-row">
+              <button type="button" id="formBtn65" class="btn-price-65" onclick="setFormPrice65()">65 ₽</button>
+              <input type="number" id="formCustomPrice" placeholder="Другая цена" min="1">
+            </div>
+          </div>
+
+          <!-- Generate Action -->
+          <button class="btn-generate-main" onclick="onGenerateTicketSubmit()">Создать билет</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SCREEN 4: РАСПИСАНИЕ СТАНЦИИ (Табло)
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-schedule" class="screen-view">
+      <div class="schedule-header">
+        <span class="sch-st-title">Санкт-Петербург (Балтийский вокзал)</span>
+        <span class="sch-info-icon" onclick="alert('Справочная вокзала: расписание пригородных поездов');">i</span>
+      </div>
+      <div class="sch-sub-dir">В любую сторону</div>
+
+      <!-- Date selector -->
+      <div class="date-selector-row" style="margin-bottom:6px;">
+        <button class="cal-icon-pill">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </button>
+        <button class="date-pill" id="schPillToday" onclick="selectSchDate('today')">Сегодня</button>
+        <button class="date-pill active" id="schPillTomorrow" onclick="selectSchDate('tomorrow')">Завтра</button>
+        <button class="date-pill" id="schPillAll" onclick="selectSchDate('all')">Все дни</button>
+      </div>
+
+      <div class="sch-date-label" id="schDateHeader">14 ОКТЯБРЯ</div>
+
+      <!-- Departures List (matching screenshot 20:21) -->
+      <div class="sch-list-wrap">
+        <!-- 00:12 -->
+        <div class="sch-item-row" onclick="openTrainDetails('6302', '00:12', '00:54', 'Стандарт')">
+          <div class="sch-time-big">00:12</div>
+          <div class="sch-desc-col">
+            <div class="sch-badge-tag tag-red-txt">НЕТ ПОСАДКИ</div>
+            <div class="sch-route-name">Красное Село — Санкт-Петербург (Балтийский вокзал)</div>
+          </div>
+        </div>
+        <!-- 05:40 -->
+        <div class="sch-item-row" onclick="openTrainDetails('7101', '05:40', '06:28', '«Ласточка/Финист»')">
+          <div class="sch-time-big">05:40</div>
+          <div class="sch-desc-col">
+            <div class="sch-badge-tag tag-orange-txt">«ЛАСТОЧКА/ФИНИСТ»</div>
+            <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+          </div>
+        </div>
+        <!-- 05:55 -->
+        <div class="sch-item-row" onclick="openTrainDetails('6311', '05:55', '06:58', 'Стандарт')">
+          <div class="sch-time-big">05:55</div>
+          <div class="sch-desc-col">
+            <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Гатчина-Варшавская</div>
+          </div>
+        </div>
+        <!-- 06:05 -->
+        <div class="sch-item-row" onclick="openTrainDetails('6313', '06:05', '07:35', 'Стандарт')">
+          <div class="sch-time-big">06:05</div>
+          <div class="sch-desc-col">
+            <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Сиверская</div>
+          </div>
+        </div>
+        <!-- 06:10 -->
+        <div class="sch-item-row" onclick="openTrainDetails('7103', '06:10', '07:44', '«Ласточка»')">
+          <div class="sch-time-big">06:10</div>
+          <div class="sch-desc-col">
+            <div class="sch-badge-tag tag-orange-txt">«ЛАСТОЧКА»</div>
+            <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Калище</div>
+          </div>
+        </div>
+        <!-- 06:10 arrival -->
+        <div class="sch-item-row" onclick="openTrainDetails('6314', '06:10', '07:15', 'Стандарт')">
+          <div class="sch-time-big">06:10</div>
+          <div class="sch-desc-col">
+            <div class="sch-badge-tag tag-red-txt">НЕТ ПОСАДКИ</div>
+            <div class="sch-route-name">Гатчина-Балтийская — Санкт-Петербург (Балтийский вокзал)</div>
+          </div>
+        </div>
+        <!-- 06:20 -->
+        <div class="sch-item-row" onclick="openTrainDetails('7105', '06:20', '07:08', '«Ласточка»')">
+          <div class="sch-time-big">06:20</div>
+          <div class="sch-desc-col">
+            <div class="sch-badge-tag tag-orange-txt">«ЛАСТОЧКА»</div>
+            <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+          </div>
+        </div>
+        <!-- 06:25 -->
+        <div class="sch-item-row" onclick="openTrainDetails('7107', '06:25', '08:02', '«Ласточка/Финист»')">
+          <div class="sch-time-big">06:25</div>
+          <div class="sch-desc-col">
+            <div class="sch-badge-tag tag-red-txt">НЕТ ПОСАДКИ</div>
+            <div class="sch-badge-tag tag-orange-txt">«ЛАСТОЧКА/ФИНИСТ»</div>
+            <div class="sch-route-name">Калище — Санкт-Петербург (Балтийский вокзал)</div>
+          </div>
+        </div>
+        <!-- 06:25 -->
+        <div class="sch-item-row" onclick="openTrainDetails('6317', '06:25', '07:32', 'Стандарт')">
+          <div class="sch-time-big">06:25</div>
+          <div class="sch-desc-col">
+            <div class="sch-route-name">Санкт-Петербург (Балтийский вокзал) — Гатчина-Балтийская</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SCREEN 5: НАСТРОЙКИ (Профиль и параметры)
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-settings" class="screen-view">
+      <div class="settings-header-title">Настройки</div>
+
+      <!-- Profile Header Row -->
+      <div class="profile-card-item" onclick="openProfileModal()">
+        <span class="profile-logout-txt">Выйти</span>
+        <div class="profile-user-info">
+          <span class="profile-username" id="displayUsername">vvvv812</span>
+          <div class="profile-avatar-circle" id="displayAvatarIcon">🐻</div>
+        </div>
+      </div>
+
+      <!-- Settings Rows -->
+      <div class="settings-list">
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Пригородная зона</span>
+            <span class="setting-sub-desc">Область, в которую входит ваш город</span>
+          </div>
+          <span class="setting-val-arrow" onclick="alert('Выбор пригородной зоны: Санкт-Петербургская');">Санкт-Петербургская &gt;</span>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Язык</span>
+          </div>
+          <span class="setting-val-arrow" onclick="alert('Язык приложения: Русский');">Русский &gt;</span>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Карта «Тройка»</span>
+            <span class="setting-sub-desc">Теперь в приложении</span>
+          </div>
+          <button class="btn-bind-troika" onclick="alert('Привязка карты Тройка');">Привязать</button>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Показывать остановки</span>
+          </div>
+          <label class="ios-toggle">
+            <input type="checkbox" id="toggleStops">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Оформление</span>
+          </div>
+          <span class="setting-val-arrow" onclick="alert('Оформление: Системное (Тёмная тема)');">Системное &gt;</span>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Показывать номер поезда</span>
+          </div>
+          <label class="ios-toggle">
+            <input type="checkbox" id="toggleTrainNum">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Разрешить уведомления</span>
+            <span class="setting-sub-desc">Уведомления о важных изменениях в движении электричек из избранного</span>
+          </div>
+          <label class="ios-toggle">
+            <input type="checkbox" id="toggleNotif">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Фильтр поездов</span>
+          </div>
+          <span class="setting-val-arrow" onclick="alert('Фильтр поездов: Все поезда');">Все поезда &gt;</span>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Фильтр тарифов</span>
+          </div>
+          <span class="setting-val-arrow" onclick="alert('Фильтр тарифов: Цена по билету');">Цена по билету &gt;</span>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Пересадки</span>
+            <span class="setting-sub-desc">Строить маршруты с пересадками</span>
+          </div>
+          <span class="setting-val-arrow" onclick="alert('Пересадки: Автоматически');">Автоматически &gt;</span>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-title-col">
+            <span class="setting-main-label">Предложить каршеринг</span>
+          </div>
+          <label class="ios-toggle">
+            <input type="checkbox" id="toggleCarshare">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row" style="cursor:pointer;" onclick="alert('Будильники: функция в разработке');">
+          <span class="setting-main-label">Будильники</span>
+          <span style="color:#666;">&gt;</span>
+        </div>
+
+        <div class="setting-row" style="cursor:pointer;" onclick="alert('Центр поддержки Яндекс Расписаний');">
+          <span class="setting-main-label">Центр поддержки</span>
+          <span style="color:#666;">&gt;</span>
+        </div>
+
+        <div class="setting-row" style="cursor:pointer;" onclick="alert('О приложении: Яндекс Электрички v4.28');">
+          <span class="setting-main-label">О приложении</span>
+          <span style="color:#666;">&gt;</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SCREEN: ДЕТАЛИ ПОЕЗДА (Timeline)
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-train-details" class="train-details-view">
+      <div class="train-det-nav">
+        <button class="btn-back-det" onclick="closeTrainDetails()">‹</button>
+        <span class="train-det-title" id="detTrainIdTitle">Поезд 7191</span>
+        <span style="font-size:20px;cursor:pointer;" onclick="alert('Будильник на рейс установлен');">⏰</span>
+      </div>
+
+      <div class="train-det-head-card">
+        <div class="train-det-cat" id="detCategory">«ЛАСТОЧКА»</div>
+        <div class="train-det-route-big" id="detRouteBig">Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1</div>
+        <div class="train-det-schedule-info">
+          <div>Ежедневно</div>
+          <div style="color:#9ca3af;">Кроме: Электродепо</div>
+        </div>
+      </div>
+
+      <!-- Blue Promo -->
+      <div class="ad-card-blue" onclick="alert('Кредистория: Бесплатный кредитный рейтинг');">
+        <span style="font-size:22px;">🎯</span>
+        <div>
+          <div class="ad-txt-1">Проверьте кредитную историю</div>
+          <div class="ad-txt-2">Бесплатно с Кредисторией ⓘ</div>
+        </div>
+      </div>
+
+      <div style="padding:0 16px 8px;font-size:13px;color:var(--text-muted);">Указано местное время</div>
+      <button class="train-tariffs-btn" onclick="openTicketCreatorFromTrain();">Все тарифы / Купить билет (65 ₽)</button>
+
+      <!-- Stops timeline -->
+      <div class="timeline-wrap" id="timelineList">
+        <!-- 20:40 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">20:40</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Санкт-Петербург (Балтийский вокзал)</div>
+            <div class="timeline-st-sub">☁️ +5° как +3°</div>
+            <div class="timeline-st-sub" style="color:#6b7280;text-decoration:line-through;">Электродепо</div>
+          </div>
+        </div>
+        <!-- 20:48 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">20:48</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Броневая</div>
+          </div>
+        </div>
+        <!-- 20:52 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">20:52</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Ленинский Проспект</div>
+          </div>
+        </div>
+        <!-- 20:55 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">20:55</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Дачное</div>
+          </div>
+        </div>
+        <!-- 20:59 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">20:59</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Ульянка</div>
+          </div>
+        </div>
+        <!-- 21:02 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">21:02</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Лигово</div>
+          </div>
+        </div>
+        <!-- 21:05 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">21:05</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Сосновая Поляна</div>
+          </div>
+        </div>
+        <!-- 21:07 - 21:08 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">21:07 — 21:08</div>
+          <div class="timeline-line-col">
+            <div class="timeline-rail-bar"></div>
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Сергиево (Володарская)</div>
+            <div class="timeline-st-sub">☁️ +5° как +3°</div>
+          </div>
+        </div>
+        <!-- Expandable middle stops -->
+        <div id="hiddenStopsBlock" style="display:none;">
+          <div class="timeline-row">
+            <div class="timeline-time-col">21:14</div>
+            <div class="timeline-line-col"><div class="timeline-rail-bar"></div><div class="timeline-dot"></div></div>
+            <div class="timeline-name-col"><div class="timeline-st-name">Стрельна</div></div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-time-col">21:18</div>
+            <div class="timeline-line-col"><div class="timeline-rail-bar"></div><div class="timeline-dot"></div></div>
+            <div class="timeline-name-col"><div class="timeline-st-name">Красные Зори</div></div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-time-col">21:22</div>
+            <div class="timeline-line-col"><div class="timeline-rail-bar"></div><div class="timeline-dot"></div></div>
+            <div class="timeline-name-col"><div class="timeline-st-name">Новый Петергоф</div></div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-time-col">21:26</div>
+            <div class="timeline-line-col"><div class="timeline-rail-bar"></div><div class="timeline-dot"></div></div>
+            <div class="timeline-name-col"><div class="timeline-st-name">Старый Петергоф</div></div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-time-col">21:30</div>
+            <div class="timeline-line-col"><div class="timeline-rail-bar"></div><div class="timeline-dot"></div></div>
+            <div class="timeline-name-col"><div class="timeline-st-name">Университет</div></div>
+          </div>
+          <div class="timeline-row">
+            <div class="timeline-time-col">21:33</div>
+            <div class="timeline-line-col"><div class="timeline-rail-bar"></div><div class="timeline-dot"></div></div>
+            <div class="timeline-name-col"><div class="timeline-st-name">Мартышкино</div></div>
+          </div>
+        </div>
+        <div style="padding-left:114px;">
+          <span class="timeline-expand-btn" id="btnToggleStops" onclick="toggleTimelineMiddleStops()">Показать 6 станций ∨</span>
+        </div>
+        <!-- 21:36 -->
+        <div class="timeline-row">
+          <div class="timeline-time-col">21:36</div>
+          <div class="timeline-line-col">
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="timeline-name-col">
+            <div class="timeline-st-name">Ораниенбаум-1</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-report-err" onclick="alert('Спасибо! Сообщение отправлено в службу поддержки.');">Сообщить об ошибке</button>
+    </div>
+
+  </div> <!-- /content-area -->
+
+
+  <!-- ══════════════════════════════════════════════════════
+       BOTTOM NAVIGATION BAR (5 Вкладок)
+  ══════════════════════════════════════════════════════ -->
+  <nav class="bottom-tab-bar">
+    <!-- 1: Маршруты -->
+    <button class="tab-item-btn active" id="tabBtnRoutes" onclick="switchMainTab('routes')">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 15l-4-4v3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h1V2H7a5 5 0 0 0-5 5v4a5 5 0 0 0 5 5h8v3l4-4zM5 9l4 4V10h8a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3h-1v2h1a5 5 0 0 0 5-5v-4a5 5 0 0 0-5-5H9V5L5 9z"/>
+      </svg>
+      <span class="tab-label">Маршруты</span>
+    </button>
+
+    <!-- 2: Избранное -->
+    <button class="tab-item-btn" id="tabBtnFavorites" onclick="switchMainTab('favorites')">
+      <svg viewBox="0 0 24 24">
+        <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+      </svg>
+      <span class="tab-label">Избранное</span>
+    </button>
+
+    <!-- 3: Билеты (Центр) -->
+    <button class="tab-item-btn" id="tabBtnTickets" style="position:relative;" onclick="switchMainTab('tickets')">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 4H4c-1.1 0-2 .9-2 2v3c1.1 0 2 .9 2 2s-.9 2-2 2v3c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-3c-1.1 0-2-.9-2-2s.9-2 2-2V6c0-1.1-.9-2-2-2zm-5 12H9v-2h6v2zm0-4H9v-2h6v2zm0-4H9V6h6v2z"/>
+      </svg>
+      <span class="tab-label">Билеты</span>
+    </button>
+
+    <!-- 4: Расписание -->
+    <button class="tab-item-btn" id="tabBtnSchedule" onclick="switchMainTab('schedule')">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h2v4.8l4.2 2.5-.8 1.9z"/>
+      </svg>
+      <span class="tab-label">Расписание</span>
+    </button>
+
+    <!-- 5: Настройки -->
+    <button class="tab-item-btn" id="tabBtnSettings" onclick="switchMainTab('settings')">
+      <svg viewBox="0 0 24 24">
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+      </svg>
+      <span class="tab-label">Настройки</span>
+    </button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════
+       MODAL: ВЫБОР СТАНЦИИ
+  ══════════════════════════════════════════════════════ -->
+  <div id="stationModal" class="station-modal">
+    <div class="station-modal-content">
+      <div class="station-modal-header">
+        <span class="station-modal-title" id="stationModalHeaderTitle">Откуда</span>
+        <button class="btn-cancel-modal" onclick="closeStationModal()">Отмена</button>
+      </div>
+
+      <div class="station-input-wrap">
+        <input type="text" id="stationModalSearchInput" class="station-search-input" placeholder="Станция или город" autocomplete="off" oninput="filterStationsList(this.value)">
+      </div>
+
+      <div class="station-history-list" id="stationHistoryList">
+        <!-- Preset items -->
+        <div class="station-history-item" onclick="selectStationItem('Балтийский вокзал')">
+          <div class="st-clock-icon">🕒</div>
+          <div class="st-text-col">
+            <span class="st-name-main">Балтийский вокзал</span>
+            <span class="st-name-sub">Санкт-Петербург</span>
+          </div>
+        </div>
+        <div class="station-history-item" onclick="selectStationItem('Сергиево (Володарская)')">
+          <div class="st-clock-icon">🕒</div>
+          <div class="st-text-col">
+            <span class="st-name-main">Сергиево (Володарская)</span>
+            <span class="st-name-sub">Сергиево · Санкт-Петербург и Ленинградская область</span>
+          </div>
+        </div>
+        <div class="station-history-item" onclick="selectStationItem('Ленинский проспект')">
+          <div class="st-clock-icon">🕒</div>
+          <div class="st-text-col">
+            <span class="st-name-main">Ленинский проспект</span>
+            <span class="st-name-sub">Санкт-Петербург</span>
+          </div>
+        </div>
+        <div class="station-history-item" onclick="selectStationItem('Ораниенбаум-1')">
+          <div class="st-clock-icon">🕒</div>
+          <div class="st-text-col">
+            <span class="st-name-main">Ораниенбаум-1</span>
+            <span class="st-name-sub">Ломоносов · Санкт-Петербург</span>
+          </div>
+        </div>
+        <div class="station-history-item" onclick="selectStationItem('Ораниенбаум-2')">
+          <div class="st-clock-icon">🕒</div>
+          <div class="st-text-col">
+            <span class="st-name-main">Ораниенбаум-2</span>
+            <span class="st-name-sub">Ломоносов · Санкт-Петербург</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════
+       MODAL: ПРОФИЛЬ / СМЕНА АККАУНТА
+  ══════════════════════════════════════════════════════ -->
+  <div id="profileModal" class="profile-modal">
+    <div class="profile-modal-box">
+      <div class="profile-modal-title">Настройки аккаунта</div>
+      <div>
+        <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">Логин / Имя аккаунта</label>
+        <input type="text" id="profModalInput" class="profile-input-field" placeholder="Введите никнейм">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:6px;">Выберите аватарку</label>
+        <div class="avatar-grid" id="avatarGrid">
+          <!-- Avatars -->
+          <button class="avatar-opt-btn selected" onclick="pickAvatarEmoji('🐻', this)">🐻</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🦊', this)">🦊</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🐼', this)">🐼</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🐯', this)">🐯</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🦁', this)">🦁</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🐱', this)">🐱</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🐶', this)">🐶</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🐺', this)">🐺</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🦝', this)">🦝</button>
+          <button class="avatar-opt-btn" onclick="pickAvatarEmoji('🐨', this)">🐨</button>
+        </div>
+      </div>
+      <button class="btn-rand-prof" onclick="randomizeProfile()">🎲 Сгенерировать случайно</button>
+      <button class="btn-save-prof" onclick="saveProfileChanges()">Сохранить</button>
+    </div>
+  </div>
+
+</div> <!-- /app-shell -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL: ЭКРАН СГЕНЕРИРОВАННОГО БИЛЕТА (ТОЧНО КАК В ticket.html)
+══════════════════════════════════════════════════════════ -->
+<div id="ticket-view-modal">
+  <div class="tkt-view-container">
+    <div class="tkt-header">
+      <span class="tkt-back" onclick="closeTicketViewerModal()">&#8592;</span>
+      <span class="tkt-title">Билет</span>
+    </div>
+
+    <div class="tkt-body">
+      <div class="route-row-tkt">
+        <div class="route-text-tkt" id="viewerRouteText">Балтийский вокзал — Сергиево (Володарская)</div>
+        <div class="train-icon-orange">
+          <svg width="21" height="21" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="9" width="18" height="11" rx="2.5" fill="white"/>
+            <rect x="5.5" y="10.5" width="6" height="4.5" rx="1" fill="#fc7f1e"/>
+            <rect x="14.5" y="10.5" width="6" height="4.5" rx="1" fill="#fc7f1e"/>
+            <rect x="12.5" y="10.5" width="1" height="4.5" fill="white"/>
+            <rect x="4" y="17" width="18" height="1.5" fill="#fc7f1e" opacity="0.4"/>
+            <circle cx="7.5" cy="19.5" r="1.2" fill="white"/>
+            <circle cx="18.5" cy="19.5" r="1.2" fill="white"/>
+            <rect x="10" y="5.5" width="1.5" height="3.5" rx="0.5" fill="white" opacity="0.9"/>
+            <rect x="14.5" y="5.5" width="1.5" height="3.5" rx="0.5" fill="white" opacity="0.9"/>
+            <rect x="7.5" y="5" width="11" height="1.2" rx="0.6" fill="white" opacity="0.7"/>
+            <rect x="10.5" y="20.5" width="5" height="2" rx="0.8" fill="white" opacity="0.6"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="tkt-date-bold" id="viewerTicketDate">14 октября</div>
+      <div class="tkt-valid-gray" id="viewerTicketValid">Действует до 01:00 15 октября</div>
+
+      <div class="barcode-wrap" id="barcodeWrap">
+        <img id="barcodeImg" src="" alt="barcode">
+      </div>
+
+      <div class="tkt-type-txt">Полный, в одну сторону</div>
+      <div class="tkt-subtype-txt" id="viewerTicketSubtype">Билет на электричку «Ласточка»</div>
+    </div>
+
+    <div class="tkt-footer">
+      <div class="tkt-price-txt" id="viewerTicketPrice">65 ₽</div>
+      <div class="tkt-number-txt" id="viewerTicketNumber">Билет № 8492019482014</div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ──────────────────────────────────────────────────────────
+   STATE & DATA
+────────────────────────────────────────────────────────── */
+var APP_STATE = {
+  currentTab: 'routes',
+  activeRouteSubTab: 'elek',
+  routeFrom: 'Санкт-Петербург (Балтийский вокзал)',
+  routeTo: 'Сергиево (Володарская)',
+  routeDatePill: 'today',
+  modalTarget: 'from',
+  selectedAvatar: '🐻',
+  username: 'vvvv812',
+  tickets: [],
+  favorites: [],
+  selectedTrainFilter: 'Все поезда'
+};
+
+var PRESET_STATIONS = [
+  { name: 'Балтийский вокзал', sub: 'Санкт-Петербург' },
+  { name: 'Сергиево (Володарская)', sub: 'Сергиево · Санкт-Петербург и Ленинградская область' },
+  { name: 'Ленинский проспект', sub: 'Санкт-Петербург' },
+  { name: 'Ораниенбаум-1', sub: 'Ломоносов · Санкт-Петербург' },
+  { name: 'Ораниенбаум-2', sub: 'Ломоносов · Санкт-Петербург' }
+];
+
+var RANDOM_USERNAMES = [
+  'vvvv812', 'alex_spb', 'nord_rider', 'piter_express', 'spb_traveler',
+  'train_lover99', 'rus_rail', 'baltika78', 'nevsky_line', 'fast_lastochka'
+];
+var RANDOM_AVATARS = ['🐻', '🦊', '🐼', '🐯', '🦁', '🐱', '🐶', '🐺', '🦝', '🐨'];
+
+/* ──────────────────────────────────────────────────────────
+   INITIALIZATION
+────────────────────────────────────────────────────────── */
+window.addEventListener('DOMContentLoaded', function(){
+  initLiveClock();
+  initProfile();
+  initDateInputs();
+  loadSavedTickets();
+  loadSavedFavorites();
+  setupBarcodeFlip();
+});
+
+function initLiveClock(){
+  function updateTime(){
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2, '0');
+    var m = String(now.getMinutes()).padStart(2, '0');
+    var el = document.getElementById('liveTime');
+    if(el) el.textContent = h + ':' + m;
+  }
+  updateTime();
+  setInterval(updateTime, 30000);
+}
+
+function initDateInputs(){
+  var now = new Date();
+  var yyyy = now.getFullYear();
+  var mm = String(now.getMonth()+1).padStart(2,'0');
+  var dd = String(now.getDate()).padStart(2,'0');
+  var dInput = document.getElementById('formTripDate');
+  if(dInput) dInput.value = yyyy + '-' + mm + '-' + dd;
+}
+
+/* ──────────────────────────────────────────────────────────
+   PROFILE: RANDOM OR CUSTOM ACCOUNTS
+────────────────────────────────────────────────────────── */
+function initProfile(){
+  var savedUser = localStorage.getItem('y_tkt_user');
+  var savedAvatar = localStorage.getItem('y_tkt_avatar');
+
+  if(savedUser && savedAvatar){
+    APP_STATE.username = savedUser;
+    APP_STATE.selectedAvatar = savedAvatar;
+  } else {
+    // Generate randomly as requested by user
+    randomizeProfile(false);
+  }
+  updateProfileDisplay();
+}
+
+function randomizeProfile(save){
+  var rIdx = Math.floor(Math.random() * RANDOM_USERNAMES.length);
+  APP_STATE.username = RANDOM_USERNAMES[rIdx];
+  APP_STATE.selectedAvatar = RANDOM_AVATARS[rIdx % RANDOM_AVATARS.length];
+  
+  var input = document.getElementById('profModalInput');
+  if(input) input.value = APP_STATE.username;
+  
+  highlightSelectedAvatar(APP_STATE.selectedAvatar);
+  if(save !== false){
+    localStorage.setItem('y_tkt_user', APP_STATE.username);
+    localStorage.setItem('y_tkt_avatar', APP_STATE.selectedAvatar);
+    updateProfileDisplay();
+  }
+}
+
+function updateProfileDisplay(){
+  var uEl = document.getElementById('displayUsername');
+  var aEl = document.getElementById('displayAvatarIcon');
+  if(uEl) uEl.textContent = APP_STATE.username;
+  if(aEl) aEl.textContent = APP_STATE.selectedAvatar;
+}
+
+function openProfileModal(){
+  var m = document.getElementById('profileModal');
+  var inp = document.getElementById('profModalInput');
+  if(inp) inp.value = APP_STATE.username;
+  highlightSelectedAvatar(APP_STATE.selectedAvatar);
+  if(m) m.classList.add('active');
+}
+
+function closeProfileModal(){
+  var m = document.getElementById('profileModal');
+  if(m) m.classList.remove('active');
+}
+
+function pickAvatarEmoji(emoji, btnEl){
+  APP_STATE.selectedAvatar = emoji;
+  var all = document.querySelectorAll('.avatar-opt-btn');
+  all.forEach(function(b){ b.classList.remove('selected'); });
+  if(btnEl) btnEl.classList.add('selected');
+}
+
+function highlightSelectedAvatar(emoji){
+  var all = document.querySelectorAll('.avatar-opt-btn');
+  all.forEach(function(b){
+    if(b.textContent.trim() === emoji){
+      b.classList.add('selected');
+    } else {
+      b.classList.remove('selected');
+    }
+  });
+}
+
+function saveProfileChanges(){
+  var inp = document.getElementById('profModalInput');
+  if(inp && inp.value.trim()){
+    APP_STATE.username = inp.value.trim();
+  }
+  localStorage.setItem('y_tkt_user', APP_STATE.username);
+  localStorage.setItem('y_tkt_avatar', APP_STATE.selectedAvatar);
+  updateProfileDisplay();
+  closeProfileModal();
+}
+
+/* ──────────────────────────────────────────────────────────
+   NAVIGATION: TAB SWITCHER
+────────────────────────────────────────────────────────── */
+function switchMainTab(tabKey){
+  APP_STATE.currentTab = tabKey;
+
+  // Toggle screens
+  var screens = document.querySelectorAll('.screen-view');
+  screens.forEach(function(s){ s.classList.remove('active'); });
+
+  var targetScreen = document.getElementById('screen-' + tabKey);
+  if(targetScreen) targetScreen.classList.add('active');
+
+  // Close details if open
+  closeTrainDetails();
+
+  // Tab buttons styling
+  var tabButtons = document.querySelectorAll('.tab-item-btn');
+  tabButtons.forEach(function(btn){ btn.classList.remove('active'); });
+
+  var map = {
+    'routes': 'tabBtnRoutes',
+    'favorites': 'tabBtnFavorites',
+    'tickets': 'tabBtnTickets',
+    'schedule': 'tabBtnSchedule',
+    'settings': 'tabBtnSettings'
+  };
+  var activeBtn = document.getElementById(map[tabKey]);
+  if(activeBtn) activeBtn.classList.add('active');
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 1: ROUTES LOGIC
+────────────────────────────────────────────────────────── */
+function switchRouteSubTab(sub){
+  APP_STATE.activeRouteSubTab = sub;
+  var pElek = document.getElementById('pillElek');
+  var pTrain = document.getElementById('pillTrain');
+  var cElek = document.getElementById('mode-elek-container');
+  var cTrain = document.getElementById('mode-train-container');
+
+  if(sub === 'elek'){
+    pElek.classList.add('active');
+    pTrain.classList.remove('active');
+    cElek.style.display = 'block';
+    cTrain.style.display = 'none';
+  } else {
+    pTrain.classList.add('active');
+    pElek.classList.remove('active');
+    cTrain.style.display = 'block';
+    cElek.style.display = 'none';
+  }
+}
+
+function swapRouteStations(){
+  var t = APP_STATE.routeFrom;
+  APP_STATE.routeFrom = APP_STATE.routeTo;
+  APP_STATE.routeTo = t;
+  document.getElementById('routeFromDisplay').textContent = APP_STATE.routeFrom;
+  document.getElementById('routeToDisplay').textContent = APP_STATE.routeTo;
+}
+
+function selectDatePill(pill){
+  APP_STATE.routeDatePill = pill;
+  var bToday = document.getElementById('datePillToday');
+  var bTom = document.getElementById('datePillTomorrow');
+  var bAll = document.getElementById('datePillAll');
+
+  bToday.classList.remove('active');
+  bTom.classList.remove('active');
+  bAll.classList.remove('active');
+
+  if(pill === 'today') bToday.classList.add('active');
+  if(pill === 'tomorrow') bTom.classList.add('active');
+  if(pill === 'all') bAll.classList.add('active');
+}
+
+function cycleDatePills(){
+  if(APP_STATE.routeDatePill === 'today') selectDatePill('tomorrow');
+  else if(APP_STATE.routeDatePill === 'tomorrow') selectDatePill('all');
+  else selectDatePill('today');
+}
+
+function toggleTrainFilter(){
+  var txt = document.getElementById('trainFilterTxt');
+  if(APP_STATE.selectedTrainFilter === 'Все поезда'){
+    APP_STATE.selectedTrainFilter = 'Только Ласточка';
+  } else if(APP_STATE.selectedTrainFilter === 'Только Ласточка'){
+    APP_STATE.selectedTrainFilter = 'Стандартные';
+  } else {
+    APP_STATE.selectedTrainFilter = 'Все поезда';
+  }
+  if(txt) txt.textContent = APP_STATE.selectedTrainFilter;
+}
+
+/* ──────────────────────────────────────────────────────────
+   MODAL: STATION PICKER
+────────────────────────────────────────────────────────── */
+function openStationModal(target){
+  APP_STATE.modalTarget = target;
+  var m = document.getElementById('stationModal');
+  var tTitle = document.getElementById('stationModalHeaderTitle');
+  var inp = document.getElementById('stationModalSearchInput');
+
+  if(target === 'from'){
+    tTitle.textContent = 'Откуда';
+  } else {
+    tTitle.textContent = 'Куда';
+  }
+  inp.value = '';
+  filterStationsList('');
+  m.classList.add('active');
+  setTimeout(function(){ inp.focus(); }, 150);
+}
+
+function closeStationModal(){
+  var m = document.getElementById('stationModal');
+  m.classList.remove('active');
+}
+
+function filterStationsList(query){
+  var list = document.getElementById('stationHistoryList');
+  list.innerHTML = '';
+  var q = (query || '').toLowerCase().trim();
+
+  // If query is custom, allow selecting it
+  if(q){
+    var customDiv = document.createElement('div');
+    customDiv.className = 'station-history-item';
+    customDiv.innerHTML = '<div class="st-clock-icon">🔍</div><div class="st-text-col"><span class="st-name-main">' + escapeHtml(query) + '</span><span class="st-name-sub">Выбрать свой вариант</span></div>';
+    customDiv.onclick = function(){ selectStationItem(query); };
+    list.appendChild(customDiv);
+  }
+
+  PRESET_STATIONS.forEach(function(st){
+    if(!q || st.name.toLowerCase().indexOf(q) !== -1 || st.sub.toLowerCase().indexOf(q) !== -1){
+      var d = document.createElement('div');
+      d.className = 'station-history-item';
+      d.innerHTML = '<div class="st-clock-icon">🕒</div><div class="st-text-col"><span class="st-name-main">' + st.name + '</span><span class="st-name-sub">' + st.sub + '</span></div>';
+      d.onclick = function(){ selectStationItem(st.name); };
+      list.appendChild(d);
+    }
+  });
+}
+
+function selectStationItem(name){
+  if(APP_STATE.modalTarget === 'from'){
+    APP_STATE.routeFrom = name;
+    document.getElementById('routeFromDisplay').textContent = name;
+  } else {
+    APP_STATE.routeTo = name;
+    document.getElementById('routeToDisplay').textContent = name;
+  }
+  closeStationModal();
+}
+
+/* ──────────────────────────────────────────────────────────
+   TRAIN DETAILS VIEW («Поезд 7191»)
+────────────────────────────────────────────────────────── */
+var CURRENT_TRAIN_DETAILS = {
+  id: '7191',
+  category: '«ЛАСТОЧКА»',
+  route: 'Санкт-Петербург (Балтийский вокзал) — Ораниенбаум-1',
+  depart: '20:40',
+  arrive: '21:07'
+};
+
+function openTrainDetails(trainId, dep, arr, cat){
+  CURRENT_TRAIN_DETAILS.id = trainId;
+  CURRENT_TRAIN_DETAILS.depart = dep;
+  CURRENT_TRAIN_DETAILS.arrive = arr;
+  CURRENT_TRAIN_DETAILS.category = cat;
+
+  document.getElementById('detTrainIdTitle').textContent = 'Поезд ' + trainId;
+  document.getElementById('detCategory').textContent = cat.toUpperCase();
+  document.getElementById('detRouteBig').textContent = APP_STATE.routeFrom + ' — ' + APP_STATE.routeTo;
+
+  var detView = document.getElementById('screen-train-details');
+  detView.classList.add('active');
+
+  // Hide current active tab view
+  var activeScreen = document.querySelector('.screen-view.active');
+  if(activeScreen && activeScreen !== detView) activeScreen.style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+function closeTrainDetails(){
+  var detView = document.getElementById('screen-train-details');
+  detView.classList.remove('active');
+
+  // Restore current tab screen
+  var current = document.getElementById('screen-' + APP_STATE.currentTab);
+  if(current) current.style.display = 'block';
+}
+
+function toggleTimelineMiddleStops(){
+  var block = document.getElementById('hiddenStopsBlock');
+  var btn = document.getElementById('btnToggleStops');
+  if(block.style.display === 'none'){
+    block.style.display = 'block';
+    btn.textContent = 'Скрыть промежуточные станции ∧';
+  } else {
+    block.style.display = 'none';
+    btn.textContent = 'Показать 6 станций ∨';
+  }
+}
+
+function openTicketCreatorFromTrain(){
+  closeTrainDetails();
+  switchMainTab('tickets');
+  switchTicketSubTab('create');
+
+  // Fill stations
+  setDropdownOrCustom('formFrom', APP_STATE.routeFrom);
+  setDropdownOrCustom('formTo', APP_STATE.routeTo);
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 2: BOOKMARKS / FAVORITES
+────────────────────────────────────────────────────────── */
+function toggleRouteBookmark(){
+  var routeStr = APP_STATE.routeFrom + ' — ' + APP_STATE.routeTo;
+  var btn = document.getElementById('routeBookmarkBtn');
+  var idx = APP_STATE.favorites.indexOf(routeStr);
+
+  if(idx === -1){
+    APP_STATE.favorites.push(routeStr);
+    btn.classList.add('bookmarked');
+    alert('Маршрут добавлен в избранное!');
+  } else {
+    APP_STATE.favorites.splice(idx, 1);
+    btn.classList.remove('bookmarked');
+    alert('Маршрут удалён из избранного');
+  }
+  saveFavorites();
+  renderFavorites();
+}
+
+function saveFavorites(){
+  localStorage.setItem('y_tkt_favs', JSON.stringify(APP_STATE.favorites));
+}
+
+function loadSavedFavorites(){
+  try {
+    var raw = localStorage.getItem('y_tkt_favs');
+    if(raw) APP_STATE.favorites = JSON.parse(raw);
+  } catch(e){}
+  renderFavorites();
+}
+
+function renderFavorites(){
+  var emptyBox = document.getElementById('favEmptyContainer');
+  var listBox = document.getElementById('favListContainer');
+
+  if(APP_STATE.favorites.length === 0){
+    emptyBox.style.display = 'flex';
+    listBox.style.display = 'none';
+  } else {
+    emptyBox.style.display = 'none';
+    listBox.style.display = 'flex';
+    listBox.innerHTML = '';
+
+    APP_STATE.favorites.forEach(function(r, idx){
+      var c = document.createElement('div');
+      c.className = 'fav-route-card';
+      c.innerHTML = '<span style="font-weight:600;font-size:15px;color:#fff;">' + escapeHtml(r) + '</span><span style="color:#f59e0b;font-size:18px;">★</span>';
+      c.onclick = function(){
+        var parts = r.split(' — ');
+        if(parts.length === 2){
+          APP_STATE.routeFrom = parts[0];
+          APP_STATE.routeTo = parts[1];
+          document.getElementById('routeFromDisplay').textContent = parts[0];
+          document.getElementById('routeToDisplay').textContent = parts[1];
+          switchMainTab('routes');
+        }
+      };
+      listBox.appendChild(c);
+    });
+  }
+}
+
+function clearFavorites(){
+  if(confirm('Очистить все избранные маршруты?')){
+    APP_STATE.favorites = [];
+    saveFavorites();
+    renderFavorites();
+    var btn = document.getElementById('routeBookmarkBtn');
+    if(btn) btn.classList.remove('bookmarked');
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 3: БИЛЕТЫ (ГЕНЕРАТОР + СПИСОК + ПРОСМОТР)
+────────────────────────────────────────────────────────── */
+var _formPrice65 = true;
+
+function switchTicketSubTab(sub){
+  var btnMy = document.getElementById('btnSubMyTickets');
+  var btnCreate = document.getElementById('btnSubCreateTicket');
+  var vMy = document.getElementById('subview-my-tickets');
+  var vCreate = document.getElementById('subview-create-ticket');
+
+  if(sub === 'my'){
+    btnMy.classList.add('active');
+    btnCreate.classList.remove('active');
+    vMy.style.display = 'block';
+    vCreate.style.display = 'none';
+    renderUserTickets();
+  } else {
+    btnCreate.classList.add('active');
+    btnMy.classList.remove('active');
+    vCreate.style.display = 'block';
+    vMy.style.display = 'none';
+  }
+}
+
+function onStationDropdownChange(prefix){
+  var sel = document.getElementById(prefix + 'Select');
+  var cust = document.getElementById(prefix + 'Custom');
+  if(sel.value === 'custom'){
+    cust.style.display = 'block';
+    cust.value = '';
+    cust.focus();
+  } else {
+    cust.style.display = 'none';
+  }
+}
+
+function swapFormStations(){
+  var selFrom = document.getElementById('formFromSelect');
+  var selTo = document.getElementById('formToSelect');
+  var custFrom = document.getElementById('formFromCustom');
+  var custTo = document.getElementById('formToCustom');
+
+  var valFrom = getStationValue('formFrom');
+  var valTo = getStationValue('formTo');
+
+  setDropdownOrCustom('formFrom', valTo);
+  setDropdownOrCustom('formTo', valFrom);
+}
+
+function setDropdownOrCustom(prefix, stationName){
+  var sel = document.getElementById(prefix + 'Select');
+  var cust = document.getElementById(prefix + 'Custom');
+  var found = false;
+
+  for(var i=0; i<sel.options.length; i++){
+    if(sel.options[i].value === stationName){
+      sel.selectedIndex = i;
+      cust.style.display = 'none';
+      found = true;
+      break;
+    }
+  }
+  if(!found){
+    sel.value = 'custom';
+    cust.style.display = 'block';
+    cust.value = stationName;
+  }
+}
+
+function getStationValue(prefix){
+  var sel = document.getElementById(prefix + 'Select');
+  var cust = document.getElementById(prefix + 'Custom');
+  if(sel.value === 'custom'){
+    return cust.value.trim() || 'Станция';
+  }
+  return sel.value;
+}
+
+function setFormPrice65(){
+  _formPrice65 = true;
+  var inp = document.getElementById('formCustomPrice');
+  var btn = document.getElementById('formBtn65');
+  if(inp) inp.value = '';
+  if(btn){
+    btn.style.background = 'var(--accent-orange)';
+    btn.style.borderColor = 'var(--accent-orange)';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  var inp = document.getElementById('formCustomPrice');
+  if(inp){
+    inp.addEventListener('input', function(){
+      var btn = document.getElementById('formBtn65');
+      if(this.value){
+        _formPrice65 = false;
+        btn.style.background = '#333338';
+        btn.style.borderColor = '#444';
+      } else {
+        setFormPrice65();
+      }
+    });
+  }
+});
+
+function quickCreateAero(route, price){
+  var parts = route.split(' — ');
+  createTicketData({
+    from: parts[0],
+    to: parts[1],
+    date: new Date().toISOString().split('T')[0],
+    type: 'lastochka',
+    price: price
+  });
+  switchTicketSubTab('my');
+}
+
+function onGenerateTicketSubmit(){
+  var from = getStationValue('formFrom');
+  var to = getStationValue('formTo');
+  var dateVal = document.getElementById('formTripDate').value;
+
+  if(!dateVal){
+    alert('Пожалуйста, выберите дату поездки');
+    return;
+  }
+
+  var type = document.getElementById('formTicketType').value;
+  var customPrice = document.getElementById('formCustomPrice').value.trim();
+  var price = (_formPrice65 || !customPrice) ? '65' : customPrice;
+
+  createTicketData({
+    from: from,
+    to: to,
+    date: dateVal,
+    type: type,
+    price: price
+  });
+
+  switchTicketSubTab('my');
+  // Immediately show the newly generated ticket
+  openTicketViewer(APP_STATE.tickets[APP_STATE.tickets.length - 1]);
+}
+
+function createTicketData(item){
+  var tId = 'tkt_' + Date.now();
+  var tNum = generate13DigitNum();
+  var ticketObj = {
+    id: tId,
+    number: tNum,
+    from: item.from,
+    to: item.to,
+    date: item.date,
+    type: item.type,
+    price: item.price
+  };
+
+  APP_STATE.tickets.push(ticketObj);
+  saveTickets();
+  updateTicketCountBadge();
+  return ticketObj;
+}
+
+function saveTickets(){
+  localStorage.setItem('y_tkt_list', JSON.stringify(APP_STATE.tickets));
+}
+
+function loadSavedTickets(){
+  try {
+    var raw = localStorage.getItem('y_tkt_list');
+    if(raw) APP_STATE.tickets = JSON.parse(raw);
+  } catch(e){}
+  updateTicketCountBadge();
+  renderUserTickets();
+}
+
+function updateTicketCountBadge(){
+  var el = document.getElementById('tktCountBadge');
+  if(el) el.textContent = APP_STATE.tickets.length;
+}
+
+function deleteTicket(id, e){
+  if(e) e.stopPropagation();
+  APP_STATE.tickets = APP_STATE.tickets.filter(function(t){ return t.id !== id; });
+  saveTickets();
+  updateTicketCountBadge();
+  renderUserTickets();
+}
+
+function renderUserTickets(){
+  var emptyBox = document.getElementById('tktEmptyBox');
+  var listBox = document.getElementById('tktListBox');
+
+  if(APP_STATE.tickets.length === 0){
+    emptyBox.style.display = 'block';
+    listBox.style.display = 'none';
+  } else {
+    emptyBox.style.display = 'none';
+    listBox.style.display = 'flex';
+    listBox.innerHTML = '';
+
+    APP_STATE.tickets.forEach(function(t){
+      var d = new Date(t.date + 'T12:00:00');
+      var dStr = formatRuDate(d);
+      var typeTitle = (t.type === 'lastochka') ? '«Ласточка»' : 'Стандарт';
+
+      var card = document.createElement('div');
+      card.className = 'user-ticket-card';
+      card.innerHTML = 
+        '<button class="tkt-card-del" onclick="deleteTicket(\'' + t.id + '\', event)">✕</button>' +
+        '<div class="tkt-card-route">' + escapeHtml(t.from) + ' — ' + escapeHtml(t.to) + '</div>' +
+        '<div class="tkt-card-meta">' + typeTitle + ' • ' + dStr + ' • ' + t.price + ' ₽</div>' +
+        '<div><span class="tkt-card-status">● Действует</span></div>';
+
+      card.onclick = function(){ openTicketViewer(t); };
+      listBox.appendChild(card);
+    });
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   TICKET VIEWER MODAL (ТОЧНО КАК В ticket.html)
+────────────────────────────────────────────────────────── */
+var spinning = false;
+
+function openTicketViewer(tkt){
+  var modal = document.getElementById('ticket-view-modal');
+  var d1 = new Date(tkt.date + 'T12:00:00');
+  var d2 = new Date(d1);
+  d2.setDate(d2.getDate() + 1);
+
+  document.getElementById('viewerRouteText').textContent = tkt.from + ' — ' + tkt.to;
+  document.getElementById('viewerTicketDate').textContent = formatRuDate(d1);
+  document.getElementById('viewerTicketValid').textContent = 'Действует до 01:00 ' + formatRuDate(d2);
+  document.getElementById('viewerTicketNumber').textContent = 'Билет № ' + tkt.number;
+  document.getElementById('viewerTicketPrice').textContent = tkt.price + ' ₽';
+
+  document.getElementById('viewerTicketSubtype').textContent =
+    (tkt.type === 'lastochka')
+      ? 'Билет на электричку «Ласточка»'
+      : 'Билет на электричку стандарт (обычный пригородный поезд)';
+
+  // Pick Barcode
+  var barcodeSrc = '';
+  if(window.BARCODES && window.BARCODES.length > 0){
+    var idx = Math.floor(Math.random() * window.BARCODES.length);
+    barcodeSrc = window.BARCODES[idx];
+  } else {
+    // Fallback crisp barcode SVG data URI
+    barcodeSrc = createFallbackBarcodeSvg();
+  }
+  document.getElementById('barcodeImg').src = barcodeSrc;
+
+  modal.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function closeTicketViewerModal(){
+  var modal = document.getElementById('ticket-view-modal');
+  modal.classList.remove('active');
+}
+
+function setupBarcodeFlip(){
+  var wrap = document.getElementById('barcodeWrap');
+  if(!wrap) return;
+
+  function doFlip(){
+    if(spinning) return;
+    spinning = true;
+    var img = document.getElementById('barcodeImg');
+    var start = null;
+    var dur = 1500;
+
+    function easeInOut(t){ return t<.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      var deg = easeInOut(p) * 360;
+      img.style.webkitTransform = 'perspective(800px) rotateY('+deg+'deg)';
+      img.style.transform       = 'perspective(800px) rotateY('+deg+'deg)';
+      if(p < 1){
+        requestAnimationFrame(step);
+      } else {
+        img.style.webkitTransform = '';
+        img.style.transform = '';
+        spinning = false;
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  wrap.addEventListener('click', doFlip);
+  wrap.addEventListener('touchend', function(e){
+    e.preventDefault();
+    doFlip();
+  }, {passive: false});
+}
+
+function createFallbackBarcodeSvg(){
+  var bars = '';
+  var x = 10;
+  for(var i=0; i<50; i++){
+    var w = (i%3===0) ? 3 : ((i%2===0)?1:2);
+    bars += '<rect x="'+x+'" y="0" width="'+w+'" height="80" fill="#000"/>';
+    x += w + (i%4===0 ? 3 : 2);
+  }
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'+(x+10)+'" height="80" viewBox="0 0 '+(x+10)+' 80" style="background:#fff;">'+bars+'</svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+/* ──────────────────────────────────────────────────────────
+   TAB 4: SCHEDULE / ТАБЛО
+────────────────────────────────────────────────────────── */
+function selectSchDate(pill){
+  var pToday = document.getElementById('schPillToday');
+  var pTom = document.getElementById('schPillTomorrow');
+  var pAll = document.getElementById('schPillAll');
+  var head = document.getElementById('schDateHeader');
+
+  pToday.classList.remove('active');
+  pTom.classList.remove('active');
+  pAll.classList.remove('active');
+
+  var now = new Date();
+  if(pill === 'today'){
+    pToday.classList.add('active');
+    head.textContent = formatRuDate(now).toUpperCase();
+  } else if(pill === 'tomorrow'){
+    pTom.classList.add('active');
+    var tom = new Date(now);
+    tom.setDate(tom.getDate() + 1);
+    head.textContent = formatRuDate(tom).toUpperCase();
+  } else {
+    pAll.classList.add('active');
+    head.textContent = 'ВСЕ ДНИ НЕДЕЛИ';
+  }
+}
+
+/* ──────────────────────────────────────────────────────────
+   HELPERS
+────────────────────────────────────────────────────────── */
+function formatRuDate(d){
+  var m=['января','февраля','марта','апреля','мая','июня',
+         'июля','августа','сентября','октября','ноября','декабря'];
+  return d.getDate()+' '+m[d.getMonth()];
+}
+
+function generate13DigitNum(){
+  var n='';
+  for(var i=0; i<13; i++) n += Math.floor(Math.random()*10);
+  return n;
+}
+
+function escapeHtml(str){
+  return (str || '').replace(/[&<>"']/g, function(m){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+  });
+}
+</script>
+
 </body>
 </html>
